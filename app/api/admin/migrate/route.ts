@@ -99,13 +99,16 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     // Check migration status
-    const { stdout, stderr: _stderr } = await execAsync('npx prisma migrate status', {
-      env: {
-        ...process.env,
-        DATABASE_URL: process.env.DATABASE_URL,
-        DIRECT_URL: process.env.DIRECT_URL || process.env.DATABASE_URL,
-      },
-    });
+    const { stdout, stderr: _stderr } = await execAsync(
+      'npx prisma migrate status',
+      {
+        env: {
+          ...process.env,
+          DATABASE_URL: process.env.DATABASE_URL,
+          DIRECT_URL: process.env.DIRECT_URL || process.env.DATABASE_URL,
+        },
+      }
+    );
     return NextResponse.json({
       success: true,
       status: stdout,
