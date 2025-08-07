@@ -61,7 +61,7 @@ export function TaskCalendar() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [view, setView] = useState(Views.MONTH);
+  const [view, setView] = useState<'month' | 'week' | 'day' | 'agenda'>(Views.MONTH as 'month');
   const [date, setDate] = useState(new Date());
   useEffect(() => {
     fetchTasks();
@@ -210,9 +210,7 @@ export function TaskCalendar() {
               onSelectEvent={handleSelectEvent}
               eventPropGetter={eventStyleGetter}
               view={view}
-              onView={(newView) =>
-                setView(newView as 'month' | 'week' | 'day' | 'agenda')
-              }
+              onView={(newView) => setView(newView as 'month' | 'week' | 'day' | 'agenda')}
               date={date}
               onNavigate={setDate}
               components={{
