@@ -17,7 +17,7 @@ async function isAuthorized(request: NextRequest): Promise<boolean> {
   }
 
   // Option 2: Check if user is admin (requires NextAuth integration)
-  // const session = await getServerSession(authOptions);
+  // const session = await getServerSession();
   // if (session?.user?.role === 'admin') {
   //   return true;
   // }
