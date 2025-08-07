@@ -6,17 +6,18 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 // GET - Obter tarefa específica
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
     const task = await prisma.task.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       include: {
@@ -43,9 +44,10 @@ export async function GET(
 // PUT - Atualizar tarefa
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
@@ -53,7 +55,7 @@ export async function PUT(
     // Verificar se a tarefa pertence ao usuário
     const existingTask = await prisma.task.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     });
@@ -100,7 +102,7 @@ export async function PUT(
     if (validatedData.tags !== undefined) {
       // Primeiro, desconectar todas as tags existentes
       await prisma.task.update({
-        where: { id: params.id },
+        where: { id: id },
         data: { tags: { set: [] } },
       });
       // Depois, conectar ou criar as novas tags
@@ -117,7 +119,7 @@ export async function PUT(
       }
     }
     const updatedTask = await prisma.task.update({
-      where: { id: params.id },
+      where: { id: id },
       data: updateData,
       include: {
         category: true,
@@ -142,10 +144,11 @@ export async function PUT(
 }
 // DELETE - Deletar tarefa
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
@@ -153,7 +156,7 @@ export async function DELETE(
     // Verificar se a tarefa pertence ao usuário
     const existingTask = await prisma.task.findFirst({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
     });
@@ -164,7 +167,7 @@ export async function DELETE(
       );
     }
     await prisma.task.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
     return NextResponse.json({ message: 'Tarefa deletada com sucesso' });
   } catch (error) {
