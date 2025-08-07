@@ -1,7 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  MessageCircle,
   X,
   Send,
   Loader2,
