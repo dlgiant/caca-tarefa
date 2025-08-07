@@ -1,6 +1,5 @@
-"use client"
-
-import * as React from "react"
+'use client';
+import * as React from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,41 +9,37 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-
+} from '@/components/ui/alert-dialog';
 interface ConfirmDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  title: string
-  description: string
-  confirmText?: string
-  cancelText?: string
-  onConfirm: () => void
-  onCancel?: () => void
-  variant?: "default" | "destructive"
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  description: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm: () => void;
+  onCancel?: () => void;
+  variant?: 'default' | 'destructive';
 }
-
 export function ConfirmDialog({
   open,
   onOpenChange,
   title,
   description,
-  confirmText = "Confirmar",
-  cancelText = "Cancelar",
+  confirmText = 'Confirmar',
+  cancelText = 'Cancelar',
   onConfirm,
   onCancel,
-  variant = "default",
+  variant = 'default',
 }: ConfirmDialogProps) {
   const handleConfirm = () => {
-    onConfirm()
-    onOpenChange(false)
-  }
-
+    onConfirm();
+    onOpenChange(false);
+  };
   const handleCancel = () => {
-    onCancel?.()
-    onOpenChange(false)
-  }
-
+    onCancel?.();
+    onOpenChange(false);
+  };
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -59,9 +54,9 @@ export function ConfirmDialog({
           <AlertDialogAction
             onClick={handleConfirm}
             className={
-              variant === "destructive"
-                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                : ""
+              variant === 'destructive'
+                ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                : ''
             }
           >
             {confirmText}
@@ -69,5 +64,5 @@ export function ConfirmDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

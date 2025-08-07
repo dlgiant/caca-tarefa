@@ -1,11 +1,16 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+'use client';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -14,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -23,71 +28,72 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Bell, Calendar, Clock, Plus, Trash2, Edit, BellOff } from 'lucide-react'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
-
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Bell,
+  Calendar,
+  Clock,
+  Plus,
+  Trash2,
+  Edit,
+  BellOff,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 const reminderSchema = z.object({
   title: z.string().min(1, 'Título é obrigatório'),
   description: z.string().optional(),
   reminderAt: z.string().min(1, 'Data e hora são obrigatórias'),
   recurring: z.enum(['NONE', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']),
   taskId: z.string().optional(),
-})
-
-type ReminderFormData = z.infer<typeof reminderSchema>
-
+});
+type ReminderFormData = z.infer<typeof reminderSchema>;
 interface Reminder {
-  id: string
-  title: string
-  description?: string | null
-  reminderAt: Date
-  recurring: 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY'
-  sent: boolean
-  sentAt?: Date | null
-  active: boolean
+  id: string;
+  title: string;
+  description?: string | null;
+  reminderAt: Date;
+  recurring: 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+  sent: boolean;
+  sentAt?: Date | null;
+  active: boolean;
   task?: {
-    id: string
-    title: string
-  } | null
-  createdAt: Date
+    id: string;
+    title: string;
+  } | null;
+  createdAt: Date;
 }
-
 interface Task {
-  id: string
-  title: string
+  id: string;
+  title: string;
 }
-
 const recurringLabels = {
   NONE: 'Não repetir',
   DAILY: 'Diariamente',
   WEEKLY: 'Semanalmente',
   MONTHLY: 'Mensalmente',
   YEARLY: 'Anualmente',
-}
-
+};
 export function ReminderManager() {
-  const [reminders, setReminders] = useState<Reminder[]>([])
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingReminder, setEditingReminder] = useState<Reminder | null>(null)
-  const [loading, setLoading] = useState(false)
-
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
+  const [loading, setLoading] = useState(false);
   const form = useForm<ReminderFormData>({
     resolver: zodResolver(reminderSchema),
     defaultValues: {
@@ -97,43 +103,37 @@ export function ReminderManager() {
       recurring: 'NONE',
       taskId: '',
     },
-  })
-
+  });
   useEffect(() => {
-    fetchReminders()
-    fetchTasks()
-  }, [])
-
+    fetchReminders();
+    fetchTasks();
+  }, []);
   const fetchReminders = async () => {
     try {
-      const response = await fetch('/api/reminders')
-      const data = await response.json()
-      setReminders(data)
+      const response = await fetch('/api/reminders');
+      const data = await response.json();
+      setReminders(data);
     } catch (error) {
-      console.error('Erro ao buscar lembretes:', error)
-      toast.error('Erro ao carregar lembretes')
+      console.error('Erro ao buscar lembretes:', error);
+      toast.error('Erro ao carregar lembretes');
     }
-  }
-
+  };
   const fetchTasks = async () => {
     try {
-      const response = await fetch('/api/tasks')
-      const data = await response.json()
-      setTasks(data)
+      const response = await fetch('/api/tasks');
+      const data = await response.json();
+      setTasks(data);
     } catch (error) {
-      console.error('Erro ao buscar tarefas:', error)
+      console.error('Erro ao buscar tarefas:', error);
     }
-  }
-
+  };
   const onSubmit = async (data: ReminderFormData) => {
     try {
-      setLoading(true)
+      setLoading(true);
       const url = editingReminder
         ? `/api/reminders/${editingReminder.id}`
-        : '/api/reminders'
-      
-      const method = editingReminder ? 'PUT' : 'POST'
-      
+        : '/api/reminders';
+      const method = editingReminder ? 'PUT' : 'POST';
       const response = await fetch(url, {
         method,
         headers: {
@@ -143,64 +143,55 @@ export function ReminderManager() {
           ...data,
           reminderAt: new Date(data.reminderAt),
         }),
-      })
-
+      });
       if (!response.ok) {
-        throw new Error('Erro ao salvar lembrete')
+        throw new Error('Erro ao salvar lembrete');
       }
-
       toast.success(
         editingReminder
           ? 'Lembrete atualizado com sucesso!'
           : 'Lembrete criado com sucesso!'
-      )
-      
-      setIsDialogOpen(false)
-      setEditingReminder(null)
-      form.reset()
-      fetchReminders()
+      );
+      setIsDialogOpen(false);
+      setEditingReminder(null);
+      form.reset();
+      fetchReminders();
     } catch (error) {
-      console.error('Erro ao salvar lembrete:', error)
-      toast.error('Erro ao salvar lembrete')
+      console.error('Erro ao salvar lembrete:', error);
+      toast.error('Erro ao salvar lembrete');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
+  };
   const handleEdit = (reminder: Reminder) => {
-    setEditingReminder(reminder)
+    setEditingReminder(reminder);
     form.reset({
       title: reminder.title,
       description: reminder.description || '',
       reminderAt: format(new Date(reminder.reminderAt), "yyyy-MM-dd'T'HH:mm"),
       recurring: reminder.recurring,
       taskId: reminder.task?.id || '',
-    })
-    setIsDialogOpen(true)
-  }
-
+    });
+    setIsDialogOpen(true);
+  };
   const handleDelete = async (reminderId: string) => {
     if (!confirm('Tem certeza que deseja excluir este lembrete?')) {
-      return
+      return;
     }
-
     try {
       const response = await fetch(`/api/reminders/${reminderId}`, {
         method: 'DELETE',
-      })
-
+      });
       if (!response.ok) {
-        throw new Error('Erro ao excluir lembrete')
+        throw new Error('Erro ao excluir lembrete');
       }
-
-      toast.success('Lembrete excluído com sucesso!')
-      fetchReminders()
+      toast.success('Lembrete excluído com sucesso!');
+      fetchReminders();
     } catch (error) {
-      console.error('Erro ao excluir lembrete:', error)
-      toast.error('Erro ao excluir lembrete')
+      console.error('Erro ao excluir lembrete:', error);
+      toast.error('Erro ao excluir lembrete');
     }
-  }
-
+  };
   const toggleActive = async (reminder: Reminder) => {
     try {
       const response = await fetch(`/api/reminders/${reminder.id}/toggle`, {
@@ -211,29 +202,26 @@ export function ReminderManager() {
         body: JSON.stringify({
           active: !reminder.active,
         }),
-      })
-
+      });
       if (!response.ok) {
-        throw new Error('Erro ao alterar status do lembrete')
+        throw new Error('Erro ao alterar status do lembrete');
       }
-
       toast.success(
-        reminder.active
-          ? 'Lembrete desativado'
-          : 'Lembrete ativado'
-      )
-      fetchReminders()
+        reminder.active ? 'Lembrete desativado' : 'Lembrete ativado'
+      );
+      fetchReminders();
     } catch (error) {
-      console.error('Erro ao alterar status do lembrete:', error)
-      toast.error('Erro ao alterar status do lembrete')
+      console.error('Erro ao alterar status do lembrete:', error);
+      toast.error('Erro ao alterar status do lembrete');
     }
-  }
-
+  };
   const upcomingReminders = reminders
-    .filter(r => r.active && !r.sent)
-    .sort((a, b) => new Date(a.reminderAt).getTime() - new Date(b.reminderAt).getTime())
-    .slice(0, 5)
-
+    .filter((r) => r.active && !r.sent)
+    .sort(
+      (a, b) =>
+        new Date(a.reminderAt).getTime() - new Date(b.reminderAt).getTime()
+    )
+    .slice(0, 5);
   return (
     <div className="space-y-6">
       <Card>
@@ -249,10 +237,12 @@ export function ReminderManager() {
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => {
-                setEditingReminder(null)
-                form.reset()
-              }}>
+              <Button
+                onClick={() => {
+                  setEditingReminder(null);
+                  form.reset();
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Novo Lembrete
               </Button>
@@ -267,7 +257,10 @@ export function ReminderManager() {
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
                   <FormField
                     control={form.control}
                     name="title"
@@ -281,7 +274,6 @@ export function ReminderManager() {
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="description"
@@ -299,7 +291,6 @@ export function ReminderManager() {
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="reminderAt"
@@ -313,39 +304,45 @@ export function ReminderManager() {
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="recurring"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Recorrência</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione a recorrência" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {Object.entries(recurringLabels).map(([value, label]) => (
-                              <SelectItem key={value} value={value}>
-                                {label}
-                              </SelectItem>
-                            ))}
+                            {Object.entries(recurringLabels).map(
+                              ([value, label]) => (
+                                <SelectItem key={value} value={value}>
+                                  {label}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="taskId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Vincular à Tarefa (opcional)</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione uma tarefa" />
@@ -364,10 +361,13 @@ export function ReminderManager() {
                       </FormItem>
                     )}
                   />
-
                   <DialogFooter>
                     <Button type="submit" disabled={loading}>
-                      {loading ? 'Salvando...' : editingReminder ? 'Atualizar' : 'Criar'}
+                      {loading
+                        ? 'Salvando...'
+                        : editingReminder
+                          ? 'Atualizar'
+                          : 'Criar'}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -396,9 +396,13 @@ export function ReminderManager() {
                     <div className="flex-1">
                       <p className="font-medium text-sm">{reminder.title}</p>
                       <p className="text-xs text-muted-foreground">
-                        {format(new Date(reminder.reminderAt), "dd 'de' MMMM 'às' HH:mm", {
-                          locale: ptBR,
-                        })}
+                        {format(
+                          new Date(reminder.reminderAt),
+                          "dd 'de' MMMM 'às' HH:mm",
+                          {
+                            locale: ptBR,
+                          }
+                        )}
                       </p>
                     </div>
                     {reminder.recurring !== 'NONE' && (
@@ -411,7 +415,6 @@ export function ReminderManager() {
               </div>
             )}
           </div>
-
           {/* Lista de Todos os Lembretes */}
           <div>
             <h3 className="text-sm font-medium mb-3">Todos os Lembretes</h3>
@@ -442,7 +445,10 @@ export function ReminderManager() {
                       <div className="flex items-center gap-4 mt-2">
                         <p className="text-xs text-muted-foreground">
                           <Calendar className="h-3 w-3 inline mr-1" />
-                          {format(new Date(reminder.reminderAt), "dd/MM/yyyy HH:mm")}
+                          {format(
+                            new Date(reminder.reminderAt),
+                            'dd/MM/yyyy HH:mm'
+                          )}
                         </p>
                         {reminder.recurring !== 'NONE' && (
                           <Badge variant="secondary" className="text-xs">
@@ -491,5 +497,5 @@ export function ReminderManager() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

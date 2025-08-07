@@ -1,31 +1,29 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Download, RefreshCw, X } from 'lucide-react';
-
 export function PWAManager() {
   const [isInstallable, setIsInstallable] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const [registration, setRegistration] =
+    useState<ServiceWorkerRegistration | null>(null);
   const [isOffline, setIsOffline] = useState(false);
-
   useEffect(() => {
     // Verifica status online/offline
     const updateOnlineStatus = () => {
       setIsOffline(!navigator.onLine);
       if (!navigator.onLine) {
-        toast.warning('Você está offline. Algumas funcionalidades podem estar limitadas.');
+        toast.warning(
+          'Você está offline. Algumas funcionalidades podem estar limitadas.'
+        );
       } else if (isOffline) {
         toast.success('Conexão restaurada!');
       }
     };
-
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
-
     // Registra o Service Worker
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       navigator.serviceWorker
@@ -33,13 +31,15 @@ export function PWAManager() {
         .then((reg) => {
           setRegistration(reg);
           console.log('[PWA] Service Worker registrado');
-
           // Verifica por atualizações
           reg.addEventListener('updatefound', () => {
             const newWorker = reg.installing;
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                if (
+                  newWorker.state === 'installed' &&
+                  navigator.serviceWorker.controller
+                ) {
                   setIsUpdateAvailable(true);
                   toast.info('Nova versão disponível!', {
                     duration: Infinity,
@@ -52,23 +52,23 @@ export function PWAManager() {
               });
             }
           });
-
           // Verifica por atualizações a cada hora
-          setInterval(() => {
-            reg.update();
-          }, 1000 * 60 * 60);
+          setInterval(
+            () => {
+              reg.update();
+            },
+            1000 * 60 * 60
+          );
         })
         .catch((error) => {
           console.error('[PWA] Erro ao registrar Service Worker:', error);
         });
     }
-
     // Handler para evento de instalação
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setIsInstallable(true);
-      
       // Mostra notificação de instalação após 30 segundos
       setTimeout(() => {
         if (!localStorage.getItem('pwa-install-dismissed')) {
@@ -82,52 +82,45 @@ export function PWAManager() {
         }
       }, 30000);
     };
-
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
     // Verifica se já está instalado
     if (window.matchMedia('(display-mode: standalone)').matches) {
       console.log('[PWA] App já está instalado');
     }
-
     return () => {
       window.removeEventListener('online', updateOnlineStatus);
       window.removeEventListener('offline', updateOnlineStatus);
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt
+      );
     };
   }, [isOffline]);
-
   const handleInstall = async () => {
     if (!deferredPrompt) return;
-
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-
     if (outcome === 'accepted') {
       toast.success('App instalado com sucesso!');
       localStorage.setItem('pwa-installed', 'true');
     } else {
       localStorage.setItem('pwa-install-dismissed', 'true');
     }
-
     setDeferredPrompt(null);
     setIsInstallable(false);
   };
-
   const handleUpdate = () => {
     if (registration && registration.waiting) {
       registration.waiting.postMessage({ type: 'SKIP_WAITING' });
       window.location.reload();
     }
   };
-
   const clearCache = async () => {
     if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
       navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
       toast.success('Cache limpo com sucesso!');
     }
   };
-
   // Componente de banner de instalação
   if (isInstallable && !localStorage.getItem('pwa-install-banner-dismissed')) {
     return (
@@ -142,11 +135,7 @@ export function PWAManager() {
                 Instale o app para acesso rápido e funcionalidades offline!
               </p>
               <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  onClick={handleInstall}
-                  className="gap-2"
-                >
+                <Button size="sm" onClick={handleInstall} className="gap-2">
                   <Download className="h-4 w-4" />
                   Instalar
                 </Button>
@@ -155,7 +144,10 @@ export function PWAManager() {
                   variant="outline"
                   onClick={() => {
                     setIsInstallable(false);
-                    localStorage.setItem('pwa-install-banner-dismissed', 'true');
+                    localStorage.setItem(
+                      'pwa-install-banner-dismissed',
+                      'true'
+                    );
                   }}
                 >
                   Depois
@@ -176,7 +168,6 @@ export function PWAManager() {
       </div>
     );
   }
-
   // Componente de banner de atualização
   if (isUpdateAvailable) {
     return (
@@ -188,7 +179,8 @@ export function PWAManager() {
                 Atualização Disponível
               </h3>
               <p className="text-xs text-blue-700 dark:text-blue-300">
-                Uma nova versão está disponível. Atualize para obter as últimas melhorias!
+                Uma nova versão está disponível. Atualize para obter as últimas
+                melhorias!
               </p>
             </div>
             <Button
@@ -205,30 +197,24 @@ export function PWAManager() {
       </div>
     );
   }
-
   return null;
 }
-
 // Hook para verificar capacidades PWA
 export function usePWA() {
   const [isPWA, setIsPWA] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [canShare, setCanShare] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
-
   useEffect(() => {
     // Verifica se está rodando como PWA
     const standalone = window.matchMedia('(display-mode: standalone)').matches;
     setIsStandalone(standalone);
     setIsPWA(standalone || (navigator as any).standalone);
-
     // Verifica capacidade de compartilhamento
     setCanShare('share' in navigator);
-
     // Verifica se pode instalar
     setCanInstall('BeforeInstallPromptEvent' in window);
   }, []);
-
   const share = async (data: ShareData) => {
     if (canShare) {
       try {
@@ -241,7 +227,6 @@ export function usePWA() {
     }
     return false;
   };
-
   return {
     isPWA,
     isStandalone,

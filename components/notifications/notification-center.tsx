@@ -1,8 +1,15 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { Bell, Check, X, AlertCircle, Info, CheckCircle, AlertTriangle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+'use client';
+import { useState, useEffect } from 'react';
+import {
+  Bell,
+  Check,
+  X,
+  AlertCircle,
+  Info,
+  CheckCircle,
+  AlertTriangle,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,25 +17,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { formatDistanceToNow } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { cn } from '@/lib/utils'
-
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 interface Notification {
-  id: string
-  title: string
-  message: string
-  type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR' | 'TASK_DUE' | 'TASK_OVERDUE' | 'REMINDER' | 'PROJECT_INVITATION' | 'PROJECT_UPDATE'
-  read: boolean
-  readAt?: Date | null
-  link?: string | null
-  metadata?: any
-  createdAt: Date
+  id: string;
+  title: string;
+  message: string;
+  type:
+    | 'INFO'
+    | 'SUCCESS'
+    | 'WARNING'
+    | 'ERROR'
+    | 'TASK_DUE'
+    | 'TASK_OVERDUE'
+    | 'REMINDER'
+    | 'PROJECT_INVITATION'
+    | 'PROJECT_UPDATE';
+  read: boolean;
+  readAt?: Date | null;
+  link?: string | null;
+  metadata?: any;
+  createdAt: Date;
 }
-
 const notificationIcons = {
   INFO: Info,
   SUCCESS: CheckCircle,
@@ -39,8 +53,7 @@ const notificationIcons = {
   REMINDER: Bell,
   PROJECT_INVITATION: Bell,
   PROJECT_UPDATE: Info,
-}
-
+};
 const notificationColors = {
   INFO: 'text-blue-500',
   SUCCESS: 'text-green-500',
@@ -51,92 +64,77 @@ const notificationColors = {
   REMINDER: 'text-purple-500',
   PROJECT_INVITATION: 'text-indigo-500',
   PROJECT_UPDATE: 'text-blue-500',
-}
-
+};
 export function NotificationCenter() {
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [unreadCount, setUnreadCount] = useState(0)
-  const [isOpen, setIsOpen] = useState(false)
-
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    fetchNotifications()
+    fetchNotifications();
     // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000)
-    return () => clearInterval(interval)
-  }, [])
-
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('/api/notifications')
-      const data = await response.json()
-      setNotifications(data)
-      setUnreadCount(data.filter((n: Notification) => !n.read).length)
+      const response = await fetch('/api/notifications');
+      const data = await response.json();
+      setNotifications(data);
+      setUnreadCount(data.filter((n: Notification) => !n.read).length);
     } catch (error) {
-      console.error('Erro ao buscar notificações:', error)
+      console.error('Erro ao buscar notificações:', error);
     }
-  }
-
+  };
   const markAsRead = async (notificationId: string) => {
     try {
       await fetch(`/api/notifications/${notificationId}/read`, {
         method: 'PATCH',
-      })
-      
-      setNotifications(prev =>
-        prev.map(n =>
-          n.id === notificationId
-            ? { ...n, read: true, readAt: new Date() }
-            : n
+      });
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notificationId ? { ...n, read: true, readAt: new Date() } : n
         )
-      )
-      setUnreadCount(prev => Math.max(0, prev - 1))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Erro ao marcar notificação como lida:', error)
+      console.error('Erro ao marcar notificação como lida:', error);
     }
-  }
-
+  };
   const markAllAsRead = async () => {
     try {
       await fetch('/api/notifications/read-all', {
         method: 'PATCH',
-      })
-      
-      setNotifications(prev =>
-        prev.map(n => ({ ...n, read: true, readAt: new Date() }))
-      )
-      setUnreadCount(0)
+      });
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, read: true, readAt: new Date() }))
+      );
+      setUnreadCount(0);
     } catch (error) {
-      console.error('Erro ao marcar todas as notificações como lidas:', error)
+      console.error('Erro ao marcar todas as notificações como lidas:', error);
     }
-  }
-
+  };
   const deleteNotification = async (notificationId: string) => {
     try {
       await fetch(`/api/notifications/${notificationId}`, {
         method: 'DELETE',
-      })
-      
-      const notification = notifications.find(n => n.id === notificationId)
+      });
+      const notification = notifications.find((n) => n.id === notificationId);
       if (notification && !notification.read) {
-        setUnreadCount(prev => Math.max(0, prev - 1))
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
-      
-      setNotifications(prev => prev.filter(n => n.id !== notificationId))
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
     } catch (error) {
-      console.error('Erro ao deletar notificação:', error)
+      console.error('Erro ao deletar notificação:', error);
     }
-  }
-
+  };
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.read) {
-      markAsRead(notification.id)
+      markAsRead(notification.id);
     }
-    
     if (notification.link) {
-      window.location.href = notification.link
+      window.location.href = notification.link;
     }
-  }
-
+  };
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
@@ -174,9 +172,8 @@ export function NotificationCenter() {
             </div>
           ) : (
             notifications.map((notification) => {
-              const Icon = notificationIcons[notification.type]
-              const colorClass = notificationColors[notification.type]
-              
+              const Icon = notificationIcons[notification.type];
+              const colorClass = notificationColors[notification.type];
               return (
                 <DropdownMenuItem
                   key={notification.id}
@@ -186,12 +183,19 @@ export function NotificationCenter() {
                   )}
                   onClick={() => handleNotificationClick(notification)}
                 >
-                  <Icon className={cn('h-5 w-5 mr-3 mt-0.5 flex-shrink-0', colorClass)} />
+                  <Icon
+                    className={cn(
+                      'h-5 w-5 mr-3 mt-0.5 flex-shrink-0',
+                      colorClass
+                    )}
+                  />
                   <div className="flex-1 space-y-1">
-                    <p className={cn(
-                      'text-sm',
-                      !notification.read && 'font-semibold'
-                    )}>
+                    <p
+                      className={cn(
+                        'text-sm',
+                        !notification.read && 'font-semibold'
+                      )}
+                    >
                       {notification.title}
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -209,18 +213,18 @@ export function NotificationCenter() {
                     size="icon"
                     className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      deleteNotification(notification.id)
+                      e.stopPropagation();
+                      deleteNotification(notification.id);
                     }}
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </DropdownMenuItem>
-              )
+              );
             })
           )}
         </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

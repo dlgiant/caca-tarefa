@@ -1,9 +1,7 @@
 'use client';
-
 import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-
 interface OptimizedImageProps {
   src: string;
   alt: string;
@@ -20,7 +18,6 @@ interface OptimizedImageProps {
   onLoad?: () => void;
   fallback?: string;
 }
-
 export function OptimizedImage({
   src,
   alt,
@@ -39,24 +36,19 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const handleLoad = () => {
     setLoading(false);
     onLoad?.();
   };
-
   const handleError = () => {
     setError(true);
     setLoading(false);
   };
-
   const imageSrc = error ? fallback : src;
-
   // Definir sizes baseado em breakpoints comuns se não fornecido
   const defaultSizes = fill
     ? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
     : undefined;
-
   if (fill) {
     return (
       <div className={cn('relative overflow-hidden', containerClassName)}>
@@ -83,7 +75,6 @@ export function OptimizedImage({
       </div>
     );
   }
-
   return (
     <div className={cn('relative inline-block', containerClassName)}>
       {loading && (
@@ -113,7 +104,6 @@ export function OptimizedImage({
     </div>
   );
 }
-
 // Componente para avatar otimizado
 export function OptimizedAvatar({
   src,
@@ -141,7 +131,6 @@ export function OptimizedAvatar({
     />
   );
 }
-
 // Componente para imagem de background otimizada
 export function OptimizedBackgroundImage({
   src,
@@ -172,11 +161,7 @@ export function OptimizedBackgroundImage({
       {overlayClassName && (
         <div className={cn('absolute inset-0', overlayClassName)} />
       )}
-      {children && (
-        <div className="relative z-10">
-          {children}
-        </div>
-      )}
+      {children && <div className="relative z-10">{children}</div>}
     </div>
   );
 }

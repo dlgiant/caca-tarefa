@@ -6,10 +6,9 @@ export interface AIOptions {
   userId?: string;
   trackUsage?: boolean;
 }
-
 export interface AIResponse {
   content: string;
-  model: string;  // Nome amigável do modelo (ex: "Claude 3.5 Sonnet")
+  model: string; // Nome amigável do modelo (ex: "Claude 3.5 Sonnet")
   modelId: string; // ID técnico do modelo (ex: "claude-3-5-sonnet-20241022")
   usage?: {
     requestsUsed: number;
@@ -17,9 +16,14 @@ export interface AIResponse {
     resetTime: Date;
   };
 }
-
 export interface CommandParseResult {
-  action: 'create_task' | 'list_tasks' | 'complete_task' | 'analyze_productivity' | 'suggest_next' | 'chat';
+  action:
+    | 'create_task'
+    | 'list_tasks'
+    | 'complete_task'
+    | 'analyze_productivity'
+    | 'suggest_next'
+    | 'chat';
   parameters: {
     title?: string;
     description?: string;
@@ -31,29 +35,25 @@ export interface CommandParseResult {
   };
   originalIntent: string;
 }
-
 export interface RateLimiterConfig {
   maxRequests: number;
   windowMs: number;
 }
-
 export interface UsageData {
   requestsUsed: number;
   requestsRemaining: number;
   resetTime: Date;
 }
-
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   metadata?: {
-    model?: string;  // Modelo usado para gerar a resposta
+    model?: string; // Modelo usado para gerar a resposta
     commandParsed?: CommandParseResult;
   };
 }
-
 export interface ProductivityData {
   completedThisWeek: number;
   completionRate: number;
@@ -61,7 +61,6 @@ export interface ProductivityData {
   topCategories: string[];
   productiveHours: string[];
 }
-
 export interface TaskContext {
   pendingTasks: Array<{
     id: string;

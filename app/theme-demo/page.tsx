@@ -1,7 +1,5 @@
 'use client';
-
 import { ThemeToggle } from '@/components/custom/theme-toggle';
-
 export default function ThemeDemo() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
@@ -16,7 +14,6 @@ export default function ThemeDemo() {
           </div>
         </div>
       </header>
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
@@ -31,7 +28,8 @@ export default function ThemeDemo() {
                   Card Primário
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Este é um exemplo de card com suporte para tema claro e escuro.
+                  Este é um exemplo de card com suporte para tema claro e
+                  escuro.
                 </p>
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg shadow-md border border-blue-200 dark:border-blue-800">
@@ -52,7 +50,6 @@ export default function ThemeDemo() {
               </div>
             </div>
           </section>
-
           {/* Buttons Section */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -73,7 +70,6 @@ export default function ThemeDemo() {
               </button>
             </div>
           </section>
-
           {/* Form Section */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -114,7 +110,6 @@ export default function ThemeDemo() {
               </div>
             </div>
           </section>
-
           {/* Table Section */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -179,7 +174,6 @@ export default function ThemeDemo() {
               </table>
             </div>
           </section>
-
           {/* Info Section */}
           <section className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">

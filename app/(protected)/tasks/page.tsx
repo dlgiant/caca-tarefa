@@ -1,15 +1,12 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "@/lib/auth";
-import { TaskList } from "@/components/tasks/task-list";
-import { QuickManage } from "@/components/tasks/quick-manage";
-
+import { redirect } from 'next/navigation';
+import { getServerSession } from '@/lib/auth';
+import { TaskList } from '@/components/tasks/task-list';
+import { QuickManage } from '@/components/tasks/quick-manage';
 export default async function TasksPage() {
   const session = await getServerSession();
-
   if (!session) {
-    redirect("/login");
+    redirect('/login');
   }
-
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="mb-8">
@@ -23,7 +20,6 @@ export default async function TasksPage() {
           <QuickManage />
         </div>
       </div>
-
       <TaskList />
     </div>
   );

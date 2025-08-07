@@ -1,27 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
-
 /**
  * API de Cron Job para Processar Lembretes
- * 
+ *
  * Executado a cada 15 minutos pelo Vercel Cron
  * Configurado em vercel.json
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Verificar autorização do Vercel Cron
     const authHeader = (await headers()).get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
     const now = new Date();
     const fifteenMinutesFromNow = new Date(now.getTime() + 15 * 60 * 1000);
-
     // Buscar lembretes pendentes que devem ser enviados nos próximos 15 minutos
     const pendingReminders = await prisma.reminder.findMany({
       where: {
@@ -37,12 +31,9 @@ export async function GET(request: NextRequest) {
         task: true,
       },
     });
-
     console.log(`[CRON] Found ${pendingReminders.length} pending reminders`);
-
     const processedReminders = [];
     const errors = [];
-
     // Processar cada lembrete
     for (const reminder of pendingReminders) {
       try {
@@ -61,7 +52,6 @@ export async function GET(request: NextRequest) {
             },
           },
         });
-
         // Marcar lembrete como enviado
         await prisma.reminder.update({
           where: { id: reminder.id },
@@ -71,14 +61,12 @@ export async function GET(request: NextRequest) {
             active: reminder.recurring === 'NONE' ? false : true,
           },
         });
-
         // Se for recorrente, criar próximo lembrete
         if (reminder.recurring !== 'NONE') {
           const nextReminderAt = calculateNextReminder(
             reminder.reminderAt,
             reminder.recurring
           );
-
           await prisma.reminder.create({
             data: {
               title: reminder.title,
@@ -91,29 +79,28 @@ export async function GET(request: NextRequest) {
             },
           });
         }
-
         processedReminders.push({
           id: reminder.id,
           title: reminder.title,
           userId: reminder.userId,
           sentAt: now.toISOString(),
         });
-
         // Enviar email se configurado
         if (process.env.EMAIL_SERVER && reminder.user.email) {
           // await sendReminderEmail(reminder.user.email, reminder);
           // TODO: Implementar envio de email
         }
-
       } catch (error) {
-        console.error(`[CRON] Error processing reminder ${reminder.id}:`, error);
+        console.error(
+          `[CRON] Error processing reminder ${reminder.id}:`,
+          error
+        );
         errors.push({
           reminderId: reminder.id,
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
-
     // Limpar lembretes antigos inativos (mais de 30 dias)
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const deletedCount = await prisma.reminder.deleteMany({
@@ -125,9 +112,7 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-
     console.log(`[CRON] Cleaned up ${deletedCount.count} old reminders`);
-
     return NextResponse.json({
       success: true,
       message: 'Reminders processed successfully',
@@ -142,7 +127,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('[CRON] Reminders processing error:', error);
-    
     return NextResponse.json(
       {
         success: false,
@@ -153,16 +137,11 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 /**
  * Calcula a próxima data do lembrete baseado no tipo de recorrência
  */
-function calculateNextReminder(
-  currentDate: Date,
-  recurring: string
-): Date {
+function calculateNextReminder(currentDate: Date, recurring: string): Date {
   const next = new Date(currentDate);
-  
   switch (recurring) {
     case 'DAILY':
       next.setDate(next.getDate() + 1);
@@ -180,6 +159,5 @@ function calculateNextReminder(
       // Para NONE ou valores inválidos
       break;
   }
-  
   return next;
 }

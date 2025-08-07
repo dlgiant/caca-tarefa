@@ -1,5 +1,4 @@
 'use client';
-
 import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,28 +13,33 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
-
 interface HeaderProps {
   title?: string;
   showSearch?: boolean;
 }
-
 export function Header({ title, showSearch = true }: HeaderProps) {
   const [notifications] = useState([
-    { id: 1, title: 'Nova tarefa atribuída', time: '5 min atrás', unread: true },
+    {
+      id: 1,
+      title: 'Nova tarefa atribuída',
+      time: '5 min atrás',
+      unread: true,
+    },
     { id: 2, title: 'Projeto finalizado', time: '1 hora atrás', unread: true },
-    { id: 3, title: 'Comentário em tarefa', time: '2 horas atrás', unread: false },
+    {
+      id: 3,
+      title: 'Comentário em tarefa',
+      time: '2 horas atrás',
+      unread: false,
+    },
   ]);
-
-  const unreadCount = notifications.filter(n => n.unread).length;
-
+  const unreadCount = notifications.filter((n) => n.unread).length;
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
       <div className="flex items-center gap-4 flex-1">
         {title && (
           <h1 className="text-xl font-semibold md:text-2xl">{title}</h1>
         )}
-        
         {showSearch && (
           <div className="relative ml-auto max-w-md flex-1 md:max-w-lg">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -47,7 +51,6 @@ export function Header({ title, showSearch = true }: HeaderProps) {
           </div>
         )}
       </div>
-
       <div className="flex items-center gap-2">
         {/* Notifications */}
         <DropdownMenu>
@@ -82,7 +85,10 @@ export function Header({ title, showSearch = true }: HeaderProps) {
                       {notification.title}
                     </span>
                     {notification.unread && (
-                      <Badge variant="secondary" className="h-2 w-2 rounded-full p-0" />
+                      <Badge
+                        variant="secondary"
+                        className="h-2 w-2 rounded-full p-0"
+                      />
                     )}
                   </div>
                   <span className="text-xs text-muted-foreground">
@@ -97,7 +103,6 @@ export function Header({ title, showSearch = true }: HeaderProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
         {/* Theme Toggle */}
         <ThemeToggle />
       </div>

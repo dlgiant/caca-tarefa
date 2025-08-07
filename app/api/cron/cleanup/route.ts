@@ -1,24 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { prisma } from '@/lib/prisma';
-
 /**
  * API de Cron Job para Limpeza de Dados Antigos
- * 
+ *
  * Executado semanalmente aos domingos às 3:00 AM
  * Configurado em vercel.json
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Verificar autorização do Vercel Cron
     const authHeader = (await headers()).get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
     const now = new Date();
     const stats = {
       chatHistory: 0,
@@ -27,7 +22,6 @@ export async function GET(request: NextRequest) {
       dataExports: 0,
       sessionLogs: 0,
     };
-
     // 1. Limpar histórico de chat antigo (mais de 90 dias)
     const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
     const deletedChats = await prisma.chatHistory.deleteMany({
@@ -38,7 +32,6 @@ export async function GET(request: NextRequest) {
       },
     });
     stats.chatHistory = deletedChats.count;
-
     // 2. Limpar notificações lidas antigas (mais de 30 dias)
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const deletedNotifications = await prisma.notification.deleteMany({
@@ -50,7 +43,6 @@ export async function GET(request: NextRequest) {
       },
     });
     stats.notifications = deletedNotifications.count;
-
     // 3. Arquivar tarefas completadas antigas (mais de 180 dias)
     const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
     const archivedTasks = await prisma.task.deleteMany({
@@ -68,7 +60,6 @@ export async function GET(request: NextRequest) {
       },
     });
     stats.completedTasks = archivedTasks.count;
-
     // 4. Limpar exports antigos (mais de 7 dias)
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const deletedExports = await prisma.dataExport.deleteMany({
@@ -79,7 +70,6 @@ export async function GET(request: NextRequest) {
       },
     });
     stats.dataExports = deletedExports.count;
-
     // 5. Otimizar banco de dados (Vacuum/Analyze para PostgreSQL)
     // Nota: Isso pode requerer permissões especiais
     try {
@@ -88,7 +78,6 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.warn('[CRON] Could not optimize database:', error);
     }
-
     // 6. Limpar tokens de reset de senha expirados
     const expiredTokens = await prisma.passwordResetToken.deleteMany({
       where: {
@@ -97,7 +86,6 @@ export async function GET(request: NextRequest) {
         },
       },
     });
-
     // 7. Relatório de uso de storage por usuário (para monitoramento)
     const storageReport = await prisma.$queryRaw`
       SELECT 
@@ -115,13 +103,10 @@ export async function GET(request: NextRequest) {
          OR COUNT(DISTINCT ch.id) > 5000
          OR COUNT(DISTINCT n.id) > 1000
     `;
-
     console.log('[CRON] Cleanup completed:', stats);
-    
     if ((storageReport as any[]).length > 0) {
       console.log('[CRON] Users with high storage usage:', storageReport);
     }
-
     return NextResponse.json({
       success: true,
       message: 'Cleanup completed successfully',
@@ -132,7 +117,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('[CRON] Cleanup error:', error);
-    
     return NextResponse.json(
       {
         success: false,

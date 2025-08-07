@@ -1,12 +1,16 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-
 export default function SecuritySettings() {
   return (
     <div className="space-y-6">
@@ -33,7 +37,6 @@ export default function SecuritySettings() {
           <Button>Atualizar Senha</Button>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Autenticação de Dois Fatores</CardTitle>
@@ -54,7 +57,6 @@ export default function SecuritySettings() {
           <Button variant="outline">Configurar 2FA</Button>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Sessões Ativas</CardTitle>
@@ -71,7 +73,10 @@ export default function SecuritySettings() {
                   São Paulo, Brasil • Ativo agora
                 </p>
               </div>
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
+              <Badge
+                variant="secondary"
+                className="bg-green-100 text-green-800"
+              >
                 Sessão Atual
               </Badge>
             </div>
@@ -103,7 +108,6 @@ export default function SecuritySettings() {
           </Button>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Privacidade</CardTitle>

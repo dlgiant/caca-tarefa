@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect } from 'react';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,18 +11,15 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
-
 interface ErrorBoundaryProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
-
 export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
   useEffect(() => {
     // Log do erro para serviços de monitoramento
     console.error('Error boundary caught:', error);
   }, [error]);
-
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">

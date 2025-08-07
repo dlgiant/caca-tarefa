@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import { Plus, Filter, Search, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,7 +28,6 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-
 const tasks = [
   {
     id: '1',
@@ -82,34 +80,51 @@ const tasks = [
     project: 'Mobile App',
   },
 ];
-
 const statusConfig = {
-  pending: { label: 'Pendente', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' },
-  in_progress: { label: 'Em Andamento', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
-  completed: { label: 'Concluída', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' },
+  pending: {
+    label: 'Pendente',
+    color:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  },
+  in_progress: {
+    label: 'Em Andamento',
+    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  },
+  completed: {
+    label: 'Concluída',
+    color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  },
 };
-
 const priorityConfig = {
-  low: { label: 'Baixa', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200' },
-  medium: { label: 'Média', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' },
-  high: { label: 'Alta', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' },
+  low: {
+    label: 'Baixa',
+    color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+  },
+  medium: {
+    label: 'Média',
+    color:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  },
+  high: {
+    label: 'Alta',
+    color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  },
 };
-
 export default function TasksContent() {
   const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
-
   const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         task.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
-    
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === 'all' || task.status === statusFilter;
+    const matchesPriority =
+      priorityFilter === 'all' || task.priority === priorityFilter;
     return matchesSearch && matchesStatus && matchesPriority;
   });
-
   const toggleTaskSelection = (taskId: string) => {
     setSelectedTasks((prev) =>
       prev.includes(taskId)
@@ -117,7 +132,6 @@ export default function TasksContent() {
         : [...prev, taskId]
     );
   };
-
   const toggleAllTasks = () => {
     if (selectedTasks.length === filteredTasks.length) {
       setSelectedTasks([]);
@@ -125,7 +139,6 @@ export default function TasksContent() {
       setSelectedTasks(filteredTasks.map((task) => task.id));
     }
   };
-
   return (
     <div className="space-y-4">
       {/* Filters and Actions */}
@@ -169,7 +182,6 @@ export default function TasksContent() {
           Nova Tarefa
         </Button>
       </div>
-
       {/* Tasks Table */}
       <div className="rounded-md border">
         <Table>
@@ -177,7 +189,10 @@ export default function TasksContent() {
             <TableRow>
               <TableHead className="w-[50px]">
                 <Checkbox
-                  checked={selectedTasks.length === filteredTasks.length && filteredTasks.length > 0}
+                  checked={
+                    selectedTasks.length === filteredTasks.length &&
+                    filteredTasks.length > 0
+                  }
                   onCheckedChange={toggleAllTasks}
                 />
               </TableHead>
@@ -218,17 +233,31 @@ export default function TasksContent() {
                   <TableCell>
                     <Badge
                       variant="secondary"
-                      className={statusConfig[task.status as keyof typeof statusConfig].color}
+                      className={
+                        statusConfig[task.status as keyof typeof statusConfig]
+                          .color
+                      }
                     >
-                      {statusConfig[task.status as keyof typeof statusConfig].label}
+                      {
+                        statusConfig[task.status as keyof typeof statusConfig]
+                          .label
+                      }
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant="secondary"
-                      className={priorityConfig[task.priority as keyof typeof priorityConfig].color}
+                      className={
+                        priorityConfig[
+                          task.priority as keyof typeof priorityConfig
+                        ].color
+                      }
                     >
-                      {priorityConfig[task.priority as keyof typeof priorityConfig].label}
+                      {
+                        priorityConfig[
+                          task.priority as keyof typeof priorityConfig
+                        ].label
+                      }
                     </Badge>
                   </TableCell>
                   <TableCell>{task.assignee}</TableCell>
@@ -259,7 +288,6 @@ export default function TasksContent() {
           </TableBody>
         </Table>
       </div>
-
       {/* Selected Actions */}
       {selectedTasks.length > 0 && (
         <div className="flex items-center gap-2 rounded-lg bg-muted p-2">

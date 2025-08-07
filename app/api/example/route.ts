@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withRateLimit } from '@/lib/rate-limit';
-
 // Handler principal da API
 async function handler(req: NextRequest) {
   try {
@@ -10,7 +9,6 @@ async function handler(req: NextRequest) {
       timestamp: new Date().toISOString(),
       method: req.method,
     };
-
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -19,14 +17,12 @@ async function handler(req: NextRequest) {
     );
   }
 }
-
 // Exporta handlers com rate limiting aplicado
 export const GET = withRateLimit(handler, {
   interval: 60 * 1000, // 1 minuto
   maxRequests: 10, // 10 requisições por minuto
   uniqueTokenPerInterval: 100,
 });
-
 export const POST = withRateLimit(handler, {
   interval: 60 * 1000, // 1 minuto
   maxRequests: 5, // 5 requisições por minuto

@@ -1,9 +1,14 @@
 'use client';
-
 import { useState } from 'react';
-import { Camera, Mail, Phone, MapPin, Calendar, Briefcase } from 'lucide-react';
+import { Camera, Mail, Phone, MapPin, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,11 +16,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useSession } from 'next-auth/react';
-
 export default function ProfileContent() {
   const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
-
   // Mock data - em produção viria do banco de dados
   const profileData = {
     name: session?.user?.name || 'João Silva',
@@ -26,7 +29,14 @@ export default function ProfileContent() {
     department: 'Desenvolvimento',
     joinDate: '2023-01-15',
     bio: 'Profissional apaixonado por tecnologia e gestão de projetos. Experiência em metodologias ágeis e liderança de equipes multidisciplinares.',
-    skills: ['Scrum', 'Kanban', 'JavaScript', 'React', 'Node.js', 'Gestão de Projetos'],
+    skills: [
+      'Scrum',
+      'Kanban',
+      'JavaScript',
+      'React',
+      'Node.js',
+      'Gestão de Projetos',
+    ],
     stats: {
       tasksCompleted: 142,
       projectsLed: 8,
@@ -34,7 +44,6 @@ export default function ProfileContent() {
       completionRate: 87,
     },
   };
-
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {/* Profile Sidebar */}
@@ -46,7 +55,10 @@ export default function ProfileContent() {
                 <Avatar className="h-32 w-32">
                   <AvatarImage src={session?.user?.image || ''} />
                   <AvatarFallback className="text-2xl">
-                    {profileData.name.split(' ').map(n => n[0]).join('')}
+                    {profileData.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')}
                   </AvatarFallback>
                 </Avatar>
                 <Button
@@ -59,13 +71,14 @@ export default function ProfileContent() {
               </div>
               <div className="text-center">
                 <h2 className="text-xl font-semibold">{profileData.name}</h2>
-                <p className="text-sm text-muted-foreground">{profileData.role}</p>
+                <p className="text-sm text-muted-foreground">
+                  {profileData.role}
+                </p>
               </div>
               <Badge variant="secondary">{profileData.department}</Badge>
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Informações de Contato</CardTitle>
@@ -86,15 +99,15 @@ export default function ProfileContent() {
             <div className="flex items-center gap-3">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">
-                Desde {new Date(profileData.joinDate).toLocaleDateString('pt-BR', { 
-                  month: 'long', 
-                  year: 'numeric' 
+                Desde{' '}
+                {new Date(profileData.joinDate).toLocaleDateString('pt-BR', {
+                  month: 'long',
+                  year: 'numeric',
                 })}
               </span>
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Estatísticas</CardTitle>
@@ -103,24 +116,36 @@ export default function ProfileContent() {
             <div>
               <div className="flex items-center justify-between text-sm">
                 <span>Taxa de Conclusão</span>
-                <span className="font-medium">{profileData.stats.completionRate}%</span>
+                <span className="font-medium">
+                  {profileData.stats.completionRate}%
+                </span>
               </div>
-              <Progress value={profileData.stats.completionRate} className="mt-2 h-2" />
+              <Progress
+                value={profileData.stats.completionRate}
+                className="mt-2 h-2"
+              />
             </div>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold">{profileData.stats.tasksCompleted}</p>
-                <p className="text-xs text-muted-foreground">Tarefas Concluídas</p>
+                <p className="text-2xl font-bold">
+                  {profileData.stats.tasksCompleted}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Tarefas Concluídas
+                </p>
               </div>
               <div>
-                <p className="text-2xl font-bold">{profileData.stats.projectsLed}</p>
-                <p className="text-xs text-muted-foreground">Projetos Liderados</p>
+                <p className="text-2xl font-bold">
+                  {profileData.stats.projectsLed}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Projetos Liderados
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-
       {/* Main Content */}
       <div className="space-y-6 md:col-span-2">
         <Card>
@@ -202,7 +227,6 @@ export default function ProfileContent() {
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Habilidades</CardTitle>
@@ -225,42 +249,51 @@ export default function ProfileContent() {
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader>
             <CardTitle>Atividade Recente</CardTitle>
-            <CardDescription>
-              Suas últimas ações na plataforma
-            </CardDescription>
+            <CardDescription>Suas últimas ações na plataforma</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-start gap-4">
                 <div className="h-2 w-2 rounded-full bg-blue-500 mt-2" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">Tarefa "Implementar autenticação" concluída</p>
+                  <p className="text-sm font-medium">
+                    Tarefa {'"Implementar autenticação"'} concluída
+                  </p>
                   <p className="text-xs text-muted-foreground">Há 2 horas</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="h-2 w-2 rounded-full bg-green-500 mt-2" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">Comentário adicionado em "Website Redesign"</p>
+                  <p className="text-sm font-medium">
+                    Comentário adicionado em {'"Website Redesign"'}
+                  </p>
                   <p className="text-xs text-muted-foreground">Há 5 horas</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="h-2 w-2 rounded-full bg-purple-500 mt-2" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">Novo projeto "API Development" criado</p>
-                  <p className="text-xs text-muted-foreground">Ontem às 14:30</p>
+                  <p className="text-sm font-medium">
+                    Novo projeto {'"API Development"'} criado
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Ontem às 14:30
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <div className="h-2 w-2 rounded-full bg-yellow-500 mt-2" />
                 <div className="flex-1">
-                  <p className="text-sm font-medium">Status atualizado para "Em Progresso"</p>
-                  <p className="text-xs text-muted-foreground">Ontem às 10:15</p>
+                  <p className="text-sm font-medium">
+                    Status atualizado para {'"Em Progresso"'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Ontem às 10:15
+                  </p>
                 </div>
               </div>
             </div>

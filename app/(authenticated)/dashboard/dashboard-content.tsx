@@ -1,5 +1,4 @@
 'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   CheckCircle2,
@@ -12,7 +11,6 @@ import {
   Target,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-
 const stats = [
   {
     title: 'Tarefas Concluídas',
@@ -43,20 +41,37 @@ const stats = [
     color: 'text-orange-600',
   },
 ];
-
 const recentTasks = [
-  { id: 1, title: 'Revisar documentação', status: 'Em andamento', priority: 'Alta' },
-  { id: 2, title: 'Reunião com cliente', status: 'Pendente', priority: 'Média' },
-  { id: 3, title: 'Deploy da aplicação', status: 'Concluída', priority: 'Alta' },
-  { id: 4, title: 'Correção de bugs', status: 'Em andamento', priority: 'Baixa' },
+  {
+    id: 1,
+    title: 'Revisar documentação',
+    status: 'Em andamento',
+    priority: 'Alta',
+  },
+  {
+    id: 2,
+    title: 'Reunião com cliente',
+    status: 'Pendente',
+    priority: 'Média',
+  },
+  {
+    id: 3,
+    title: 'Deploy da aplicação',
+    status: 'Concluída',
+    priority: 'Alta',
+  },
+  {
+    id: 4,
+    title: 'Correção de bugs',
+    status: 'Em andamento',
+    priority: 'Baixa',
+  },
 ];
-
 const projects = [
   { name: 'Website Redesign', progress: 75, tasks: 24, completed: 18 },
   { name: 'Mobile App', progress: 45, tasks: 36, completed: 16 },
   { name: 'API Development', progress: 90, tasks: 20, completed: 18 },
 ];
-
 export default function DashboardContent() {
   return (
     <>
@@ -82,7 +97,6 @@ export default function DashboardContent() {
           );
         })}
       </div>
-
       {/* Content Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         {/* Recent Tasks */}
@@ -114,8 +128,8 @@ export default function DashboardContent() {
                         task.status === 'Concluída'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                           : task.status === 'Em andamento'
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                       }`}
                     >
                       {task.status}
@@ -126,7 +140,6 @@ export default function DashboardContent() {
             </div>
           </CardContent>
         </Card>
-
         {/* Projects Progress */}
         <Card className="col-span-3">
           <CardHeader>
@@ -159,7 +172,6 @@ export default function DashboardContent() {
           </CardContent>
         </Card>
       </div>
-
       {/* Activity & Calendar */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
@@ -185,7 +197,7 @@ export default function DashboardContent() {
                 <div className="flex-1">
                   <p className="text-sm font-medium">Maria Santos</p>
                   <p className="text-xs text-muted-foreground">
-                    Adicionou comentário em "Website Redesign"
+                    Adicionou comentário em {'"Website Redesign"'}
                   </p>
                 </div>
               </div>
@@ -194,14 +206,13 @@ export default function DashboardContent() {
                 <div className="flex-1">
                   <p className="text-sm font-medium">Pedro Costa</p>
                   <p className="text-xs text-muted-foreground">
-                    Criou novo projeto "Marketing Campaign"
+                    Criou novo projeto {'"Marketing Campaign"'}
                   </p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
-
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

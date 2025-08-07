@@ -1,6 +1,5 @@
-"use client"
-
-import * as React from "react"
+'use client';
+import * as React from 'react';
 import {
   Card,
   CardContent,
@@ -8,23 +7,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 interface DataCardProps {
-  title: string
-  description?: string
-  children: React.ReactNode
-  footer?: React.ReactNode
-  className?: string
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  className?: string;
   actions?: Array<{
-    label: string
-    onClick: () => void
-    variant?: "default" | "secondary" | "outline" | "ghost" | "destructive"
-  }>
+    label: string;
+    onClick: () => void;
+    variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+  }>;
 }
-
 export function DataCard({
   title,
   description,
@@ -34,7 +31,7 @@ export function DataCard({
   actions,
 }: DataCardProps) {
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn('w-full', className)}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
@@ -48,7 +45,7 @@ export function DataCard({
               {actions.map((action, index) => (
                 <Button
                   key={index}
-                  variant={action.variant || "default"}
+                  variant={action.variant || 'default'}
                   onClick={action.onClick}
                 >
                   {action.label}
@@ -59,5 +56,5 @@ export function DataCard({
         </CardFooter>
       )}
     </Card>
-  )
+  );
 }

@@ -1,20 +1,15 @@
 import { PrismaClient, Priority, ProjectStatus } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-
 const prisma = new PrismaClient();
-
 async function main() {
   console.log('🌱 Iniciando seed do banco de dados...');
-
   // Limpar dados existentes
   await prisma.task.deleteMany();
   await prisma.category.deleteMany();
   await prisma.project.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.user.deleteMany();
-
   console.log('🗑️  Dados existentes removidos');
-
   // Criar Tags
   const tags = await Promise.all([
     prisma.tag.create({
@@ -48,12 +43,9 @@ async function main() {
       },
     }),
   ]);
-
   console.log(`✅ ${tags.length} tags criadas`);
-
   // Criar Usuários
   const hashedPassword = await bcrypt.hash('senha123', 10);
-
   const user1 = await prisma.user.create({
     data: {
       email: 'joao@example.com',
@@ -61,7 +53,6 @@ async function main() {
       password: hashedPassword,
     },
   });
-
   const user2 = await prisma.user.create({
     data: {
       email: 'maria@example.com',
@@ -69,9 +60,7 @@ async function main() {
       password: hashedPassword,
     },
   });
-
   console.log('✅ 2 usuários criados');
-
   // Criar Categorias para o usuário 1
   const categoriesUser1 = await Promise.all([
     prisma.category.create({
@@ -103,7 +92,6 @@ async function main() {
       },
     }),
   ]);
-
   // Criar Categorias para o usuário 2
   const categoriesUser2 = await Promise.all([
     prisma.category.create({
@@ -121,9 +109,9 @@ async function main() {
       },
     }),
   ]);
-
-  console.log(`✅ ${categoriesUser1.length + categoriesUser2.length} categorias criadas`);
-
+  console.log(
+    `✅ ${categoriesUser1.length + categoriesUser2.length} categorias criadas`
+  );
   // Criar Projetos para o usuário 1
   const project1 = await prisma.project.create({
     data: {
@@ -135,7 +123,6 @@ async function main() {
       userId: user1.id,
     },
   });
-
   const project2 = await prisma.project.create({
     data: {
       name: 'Reforma da Casa',
@@ -145,7 +132,6 @@ async function main() {
       userId: user1.id,
     },
   });
-
   // Criar Projetos para o usuário 2
   const project3 = await prisma.project.create({
     data: {
@@ -157,9 +143,7 @@ async function main() {
       userId: user2.id,
     },
   });
-
   console.log('✅ 3 projetos criados');
-
   // Criar Tarefas para o usuário 1
   const tasksUser1 = await Promise.all([
     prisma.task.create({
@@ -268,7 +252,6 @@ async function main() {
       },
     }),
   ]);
-
   // Criar Tarefas para o usuário 2
   const tasksUser2 = await Promise.all([
     prisma.task.create({
@@ -340,29 +323,24 @@ async function main() {
       },
     }),
   ]);
-
   console.log(`✅ ${tasksUser1.length + tasksUser2.length} tarefas criadas`);
-
   // Estatísticas finais
   const totalUsers = await prisma.user.count();
   const totalTasks = await prisma.task.count();
   const totalCategories = await prisma.category.count();
   const totalProjects = await prisma.project.count();
   const totalTags = await prisma.tag.count();
-
   console.log('\n📊 Resumo do seed:');
   console.log(`   - Usuários: ${totalUsers}`);
   console.log(`   - Tarefas: ${totalTasks}`);
   console.log(`   - Categorias: ${totalCategories}`);
   console.log(`   - Projetos: ${totalProjects}`);
   console.log(`   - Tags: ${totalTags}`);
-  
   console.log('\n🎉 Seed concluído com sucesso!');
   console.log('\n📝 Credenciais dos usuários:');
   console.log('   Email: joao@example.com | Senha: senha123');
   console.log('   Email: maria@example.com | Senha: senha123');
 }
-
 main()
   .catch((e) => {
     console.error('❌ Erro durante o seed:', e);

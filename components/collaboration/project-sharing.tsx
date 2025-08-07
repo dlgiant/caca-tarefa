@@ -1,11 +1,16 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+'use client';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -14,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -23,19 +28,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+} from '@/components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Users,
   UserPlus,
@@ -48,72 +53,62 @@ import {
   Lock,
   Unlock,
   Crown,
-} from 'lucide-react'
-import { toast } from 'sonner'
-
+} from 'lucide-react';
+import { toast } from 'sonner';
 const inviteSchema = z.object({
   email: z.string().email('Email inválido'),
   role: z.enum(['VIEWER', 'EDITOR', 'ADMIN']),
   projectId: z.string().min(1, 'Selecione um projeto'),
-})
-
-type InviteFormData = z.infer<typeof inviteSchema>
-
+});
+type InviteFormData = z.infer<typeof inviteSchema>;
 interface Project {
-  id: string
-  name: string
-  description?: string | null
-  status: string
-  collaborators?: ProjectCollaborator[]
+  id: string;
+  name: string;
+  description?: string | null;
+  status: string;
+  collaborators?: ProjectCollaborator[];
 }
-
 interface ProjectCollaborator {
-  id: string
-  role: 'OWNER' | 'ADMIN' | 'EDITOR' | 'VIEWER'
-  acceptedAt?: Date | null
-  invitedAt: Date
+  id: string;
+  role: 'OWNER' | 'ADMIN' | 'EDITOR' | 'VIEWER';
+  acceptedAt?: Date | null;
+  invitedAt: Date;
   user: {
-    id: string
-    email: string
-    name: string
-    image?: string | null
-  }
+    id: string;
+    email: string;
+    name: string;
+    image?: string | null;
+  };
 }
-
 const roleLabels = {
   OWNER: 'Proprietário',
   ADMIN: 'Administrador',
   EDITOR: 'Editor',
   VIEWER: 'Visualizador',
-}
-
+};
 const roleIcons = {
   OWNER: Crown,
   ADMIN: Shield,
   EDITOR: Edit,
   VIEWER: Eye,
-}
-
+};
 const roleColors = {
   OWNER: 'bg-purple-500',
   ADMIN: 'bg-blue-500',
   EDITOR: 'bg-green-500',
   VIEWER: 'bg-gray-500',
-}
-
+};
 const rolePermissions = {
   OWNER: 'Controle total do projeto',
   ADMIN: 'Gerenciar membros e configurações',
   EDITOR: 'Editar tarefas e conteúdo',
   VIEWER: 'Apenas visualizar',
-}
-
+};
 export function ProjectSharing() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<InviteFormData>({
     resolver: zodResolver(inviteSchema),
     defaultValues: {
@@ -121,107 +116,97 @@ export function ProjectSharing() {
       role: 'VIEWER',
       projectId: '',
     },
-  })
-
+  });
   useEffect(() => {
-    fetchProjects()
-  }, [])
-
+    fetchProjects();
+  }, []);
   const fetchProjects = async () => {
     try {
-      const response = await fetch('/api/projects?includeCollaborators=true')
-      const data = await response.json()
-      setProjects(data)
+      const response = await fetch('/api/projects?includeCollaborators=true');
+      const data = await response.json();
+      setProjects(data);
       if (data.length > 0 && !selectedProject) {
-        setSelectedProject(data[0])
+        setSelectedProject(data[0]);
       }
     } catch (error) {
-      console.error('Erro ao buscar projetos:', error)
-      toast.error('Erro ao carregar projetos')
+      console.error('Erro ao buscar projetos:', error);
+      toast.error('Erro ao carregar projetos');
     }
-  }
-
+  };
   const onSubmitInvite = async (data: InviteFormData) => {
     try {
-      setLoading(true)
-      
+      setLoading(true);
       const response = await fetch('/api/collaboration/invite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-      })
-
+      });
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Erro ao enviar convite')
+        const error = await response.json();
+        throw new Error(error.message || 'Erro ao enviar convite');
       }
-
-      toast.success('Convite enviado com sucesso!')
-      setIsInviteDialogOpen(false)
-      form.reset()
-      fetchProjects()
+      toast.success('Convite enviado com sucesso!');
+      setIsInviteDialogOpen(false);
+      form.reset();
+      fetchProjects();
     } catch (error: any) {
-      console.error('Erro ao enviar convite:', error)
-      toast.error(error.message || 'Erro ao enviar convite')
+      console.error('Erro ao enviar convite:', error);
+      toast.error(error.message || 'Erro ao enviar convite');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const updateCollaboratorRole = async (collaboratorId: string, newRole: string) => {
+  };
+  const updateCollaboratorRole = async (
+    collaboratorId: string,
+    newRole: string
+  ) => {
     try {
-      const response = await fetch(`/api/collaboration/${collaboratorId}/role`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ role: newRole }),
-      })
-
+      const response = await fetch(
+        `/api/collaboration/${collaboratorId}/role`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ role: newRole }),
+        }
+      );
       if (!response.ok) {
-        throw new Error('Erro ao atualizar permissão')
+        throw new Error('Erro ao atualizar permissão');
       }
-
-      toast.success('Permissão atualizada com sucesso!')
-      fetchProjects()
+      toast.success('Permissão atualizada com sucesso!');
+      fetchProjects();
     } catch (error) {
-      console.error('Erro ao atualizar permissão:', error)
-      toast.error('Erro ao atualizar permissão')
+      console.error('Erro ao atualizar permissão:', error);
+      toast.error('Erro ao atualizar permissão');
     }
-  }
-
+  };
   const removeCollaborator = async (collaboratorId: string) => {
     if (!confirm('Tem certeza que deseja remover este colaborador?')) {
-      return
+      return;
     }
-
     try {
       const response = await fetch(`/api/collaboration/${collaboratorId}`, {
         method: 'DELETE',
-      })
-
+      });
       if (!response.ok) {
-        throw new Error('Erro ao remover colaborador')
+        throw new Error('Erro ao remover colaborador');
       }
-
-      toast.success('Colaborador removido com sucesso!')
-      fetchProjects()
+      toast.success('Colaborador removido com sucesso!');
+      fetchProjects();
     } catch (error) {
-      console.error('Erro ao remover colaborador:', error)
-      toast.error('Erro ao remover colaborador')
+      console.error('Erro ao remover colaborador:', error);
+      toast.error('Erro ao remover colaborador');
     }
-  }
-
-  const myProjects = projects.filter(p => 
-    p.collaborators?.some(c => c.role === 'OWNER')
-  )
-
-  const sharedWithMe = projects.filter(p => 
-    p.collaborators?.some(c => c.role !== 'OWNER')
-  )
-
+  };
+  const myProjects = projects.filter((p) =>
+    p.collaborators?.some((c) => c.role === 'OWNER')
+  );
+  const sharedWithMe = projects.filter((p) =>
+    p.collaborators?.some((c) => c.role !== 'OWNER')
+  );
   return (
     <div className="space-y-6">
       <Card>
@@ -244,7 +229,6 @@ export function ProjectSharing() {
                 Compartilhados Comigo ({sharedWithMe.length})
               </TabsTrigger>
             </TabsList>
-
             <TabsContent value="my-projects" className="space-y-4">
               {myProjects.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
@@ -258,22 +242,29 @@ export function ProjectSharing() {
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div>
-                            <CardTitle className="text-lg">{project.name}</CardTitle>
+                            <CardTitle className="text-lg">
+                              {project.name}
+                            </CardTitle>
                             {project.description && (
-                              <CardDescription>{project.description}</CardDescription>
+                              <CardDescription>
+                                {project.description}
+                              </CardDescription>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline">
                               {project.collaborators?.length || 0} colaboradores
                             </Badge>
-                            <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+                            <Dialog
+                              open={isInviteDialogOpen}
+                              onOpenChange={setIsInviteDialogOpen}
+                            >
                               <DialogTrigger asChild>
                                 <Button
                                   size="sm"
                                   onClick={() => {
-                                    form.setValue('projectId', project.id)
-                                    setSelectedProject(project)
+                                    form.setValue('projectId', project.id);
+                                    setSelectedProject(project);
                                   }}
                                 >
                                   <UserPlus className="h-4 w-4 mr-2" />
@@ -282,13 +273,19 @@ export function ProjectSharing() {
                               </DialogTrigger>
                               <DialogContent>
                                 <DialogHeader>
-                                  <DialogTitle>Convidar Colaborador</DialogTitle>
+                                  <DialogTitle>
+                                    Convidar Colaborador
+                                  </DialogTitle>
                                   <DialogDescription>
-                                    Envie um convite para alguém colaborar no projeto "{selectedProject?.name}"
+                                    Envie um convite para alguém colaborar no
+                                    projeto {`"${selectedProject?.name}"`}
                                   </DialogDescription>
                                 </DialogHeader>
                                 <Form {...form}>
-                                  <form onSubmit={form.handleSubmit(onSubmitInvite)} className="space-y-4">
+                                  <form
+                                    onSubmit={form.handleSubmit(onSubmitInvite)}
+                                    className="space-y-4"
+                                  >
                                     <FormField
                                       control={form.control}
                                       name="email"
@@ -306,14 +303,16 @@ export function ProjectSharing() {
                                         </FormItem>
                                       )}
                                     />
-
                                     <FormField
                                       control={form.control}
                                       name="role"
                                       render={({ field }) => (
                                         <FormItem>
                                           <FormLabel>Permissão</FormLabel>
-                                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                          <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                          >
                                             <FormControl>
                                               <SelectTrigger>
                                                 <SelectValue />
@@ -341,16 +340,20 @@ export function ProjectSharing() {
                                             </SelectContent>
                                           </Select>
                                           <FormDescription>
-                                            {field.value && rolePermissions[field.value as keyof typeof rolePermissions]}
+                                            {field.value &&
+                                              rolePermissions[
+                                                field.value as keyof typeof rolePermissions
+                                              ]}
                                           </FormDescription>
                                           <FormMessage />
                                         </FormItem>
                                       )}
                                     />
-
                                     <DialogFooter>
                                       <Button type="submit" disabled={loading}>
-                                        {loading ? 'Enviando...' : 'Enviar Convite'}
+                                        {loading
+                                          ? 'Enviando...'
+                                          : 'Enviar Convite'}
                                       </Button>
                                     </DialogFooter>
                                   </form>
@@ -364,7 +367,7 @@ export function ProjectSharing() {
                         <ScrollArea className="h-[200px]">
                           <div className="space-y-2">
                             {project.collaborators?.map((collaborator) => {
-                              const Icon = roleIcons[collaborator.role]
+                              const Icon = roleIcons[collaborator.role];
                               return (
                                 <div
                                   key={collaborator.id}
@@ -372,13 +375,19 @@ export function ProjectSharing() {
                                 >
                                   <div className="flex items-center gap-3">
                                     <Avatar className="h-8 w-8">
-                                      <AvatarImage src={collaborator.user.image || ''} />
+                                      <AvatarImage
+                                        src={collaborator.user.image || ''}
+                                      />
                                       <AvatarFallback>
-                                        {collaborator.user.name.charAt(0).toUpperCase()}
+                                        {collaborator.user.name
+                                          .charAt(0)
+                                          .toUpperCase()}
                                       </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                      <p className="text-sm font-medium">{collaborator.user.name}</p>
+                                      <p className="text-sm font-medium">
+                                        {collaborator.user.name}
+                                      </p>
                                       <p className="text-xs text-muted-foreground">
                                         {collaborator.user.email}
                                       </p>
@@ -397,22 +406,33 @@ export function ProjectSharing() {
                                         <Select
                                           value={collaborator.role}
                                           onValueChange={(value) =>
-                                            updateCollaboratorRole(collaborator.id, value)
+                                            updateCollaboratorRole(
+                                              collaborator.id,
+                                              value
+                                            )
                                           }
                                         >
                                           <SelectTrigger className="w-[120px] h-8">
                                             <SelectValue />
                                           </SelectTrigger>
                                           <SelectContent>
-                                            <SelectItem value="VIEWER">Visualizador</SelectItem>
-                                            <SelectItem value="EDITOR">Editor</SelectItem>
-                                            <SelectItem value="ADMIN">Admin</SelectItem>
+                                            <SelectItem value="VIEWER">
+                                              Visualizador
+                                            </SelectItem>
+                                            <SelectItem value="EDITOR">
+                                              Editor
+                                            </SelectItem>
+                                            <SelectItem value="ADMIN">
+                                              Admin
+                                            </SelectItem>
                                           </SelectContent>
                                         </Select>
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          onClick={() => removeCollaborator(collaborator.id)}
+                                          onClick={() =>
+                                            removeCollaborator(collaborator.id)
+                                          }
                                         >
                                           <Trash2 className="h-4 w-4" />
                                         </Button>
@@ -420,7 +440,7 @@ export function ProjectSharing() {
                                     )}
                                   </div>
                                 </div>
-                              )
+                              );
                             })}
                           </div>
                         </ScrollArea>
@@ -430,7 +450,6 @@ export function ProjectSharing() {
                 </div>
               )}
             </TabsContent>
-
             <TabsContent value="shared-with-me" className="space-y-4">
               {sharedWithMe.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
@@ -440,19 +459,30 @@ export function ProjectSharing() {
               ) : (
                 <div className="grid gap-4">
                   {sharedWithMe.map((project) => {
-                    const myRole = project.collaborators?.find(c => c.user.email === 'current-user@email.com')?.role
+                    const myRole = project.collaborators?.find(
+                      (c) => c.user.email === 'current-user@email.com'
+                    )?.role;
                     return (
                       <Card key={project.id}>
                         <CardHeader>
                           <div className="flex items-center justify-between">
                             <div>
-                              <CardTitle className="text-lg">{project.name}</CardTitle>
+                              <CardTitle className="text-lg">
+                                {project.name}
+                              </CardTitle>
                               {project.description && (
-                                <CardDescription>{project.description}</CardDescription>
+                                <CardDescription>
+                                  {project.description}
+                                </CardDescription>
                               )}
                             </div>
-                            <Badge className={roleColors[myRole as keyof typeof roleColors]}>
-                              {myRole && roleLabels[myRole as keyof typeof roleLabels]}
+                            <Badge
+                              className={
+                                roleColors[myRole as keyof typeof roleColors]
+                              }
+                            >
+                              {myRole &&
+                                roleLabels[myRole as keyof typeof roleLabels]}
                             </Badge>
                           </div>
                         </CardHeader>
@@ -461,12 +491,16 @@ export function ProjectSharing() {
                             <Share2 className="h-4 w-4" />
                             <span>
                               Compartilhado por{' '}
-                              {project.collaborators?.find(c => c.role === 'OWNER')?.user.name}
+                              {
+                                project.collaborators?.find(
+                                  (c) => c.role === 'OWNER'
+                                )?.user.name
+                              }
                             </span>
                           </div>
                         </CardContent>
                       </Card>
-                    )
+                    );
                   })}
                 </div>
               )}
@@ -475,5 +509,5 @@ export function ProjectSharing() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

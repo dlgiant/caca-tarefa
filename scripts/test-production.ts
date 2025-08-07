@@ -1,34 +1,28 @@
 #!/usr/bin/env tsx
-
 /**
  * Script de Testes de Produção
- * 
+ *
  * Verifica se todos os sistemas críticos estão funcionando
  * após o deploy em produção
- * 
+ *
  * Uso: npm run test:production
  */
-
 import { config } from 'dotenv';
-
 // Carregar variáveis de ambiente
 config({ path: '.env.production.local' });
-
 interface TestResult {
   name: string;
   status: 'passed' | 'failed' | 'warning';
   message?: string;
   duration?: number;
 }
-
 class ProductionTests {
   private baseUrl: string;
   private results: TestResult[] = [];
-
   constructor(baseUrl?: string) {
-    this.baseUrl = baseUrl || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    this.baseUrl =
+      baseUrl || process.env.NEXTAUTH_URL || 'http://localhost:3000';
   }
-
   /**
    * Teste de health check básico
    */
@@ -37,7 +31,6 @@ class ProductionTests {
     try {
       const response = await fetch(`${this.baseUrl}/api/health`);
       const duration = Date.now() - startTime;
-
       if (response.ok) {
         this.results.push({
           name: 'Health Check',
@@ -60,7 +53,6 @@ class ProductionTests {
       });
     }
   }
-
   /**
    * Teste de conexão com banco de dados
    */
@@ -72,7 +64,6 @@ class ProductionTests {
         method: 'GET',
       });
       const duration = Date.now() - startTime;
-
       if (response.ok) {
         const data = await response.json();
         this.results.push({
@@ -97,14 +88,12 @@ class ProductionTests {
       });
     }
   }
-
   /**
    * Teste de autenticação
    */
   async testAuthentication(): Promise<void> {
     try {
       const response = await fetch(`${this.baseUrl}/api/auth/providers`);
-      
       if (response.ok) {
         const providers = await response.json();
         this.results.push({
@@ -127,7 +116,6 @@ class ProductionTests {
       });
     }
   }
-
   /**
    * Teste de integração com Claude AI
    */
@@ -140,7 +128,6 @@ class ProductionTests {
       });
       return;
     }
-
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/test`, {
         method: 'POST',
@@ -149,7 +136,6 @@ class ProductionTests {
         },
         body: JSON.stringify({ test: true }),
       });
-
       if (response.ok) {
         this.results.push({
           name: 'AI Integration',
@@ -172,7 +158,6 @@ class ProductionTests {
       });
     }
   }
-
   /**
    * Teste de performance (Core Web Vitals simulado)
    */
@@ -181,7 +166,6 @@ class ProductionTests {
     try {
       const response = await fetch(this.baseUrl);
       const duration = Date.now() - startTime;
-
       if (response.ok) {
         // Verificar TTFB (Time to First Byte)
         if (duration < 200) {
@@ -221,7 +205,6 @@ class ProductionTests {
       });
     }
   }
-
   /**
    * Teste de headers de segurança
    */
@@ -229,18 +212,15 @@ class ProductionTests {
     try {
       const response = await fetch(this.baseUrl);
       const headers = response.headers;
-
       const requiredHeaders = [
         'x-content-type-options',
         'x-frame-options',
         'x-xss-protection',
         'strict-transport-security',
       ];
-
       const missingHeaders = requiredHeaders.filter(
-        header => !headers.get(header)
+        (header) => !headers.get(header)
       );
-
       if (missingHeaders.length === 0) {
         this.results.push({
           name: 'Security Headers',
@@ -262,7 +242,6 @@ class ProductionTests {
       });
     }
   }
-
   /**
    * Teste de cron jobs
    */
@@ -272,17 +251,14 @@ class ProductionTests {
       '/api/cron/reminders',
       '/api/cron/cleanup',
     ];
-
     for (const endpoint of cronEndpoints) {
       try {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
           headers: {
-            'Authorization': `Bearer ${process.env.CRON_SECRET || ''}`,
+            Authorization: `Bearer ${process.env.CRON_SECRET || ''}`,
           },
         });
-
         const name = `Cron Job: ${endpoint}`;
-        
         if (response.status === 401) {
           this.results.push({
             name,
@@ -311,14 +287,12 @@ class ProductionTests {
       }
     }
   }
-
   /**
    * Executar todos os testes
    */
   async runAllTests(): Promise<void> {
     console.log(`\n🧪 Running Production Tests for ${this.baseUrl}\n`);
     console.log('━'.repeat(50));
-
     await this.testHealthCheck();
     await this.testDatabase();
     await this.testAuthentication();
@@ -326,54 +300,44 @@ class ProductionTests {
     await this.testPerformance();
     await this.testSecurityHeaders();
     await this.testCronJobs();
-
     this.printResults();
   }
-
   /**
    * Imprimir resultados dos testes
    */
   private printResults(): void {
     console.log('\n📊 Test Results\n');
     console.log('━'.repeat(50));
-
     let passed = 0;
     let failed = 0;
     let warnings = 0;
-
     for (const result of this.results) {
-      const icon = 
-        result.status === 'passed' ? '✅' :
-        result.status === 'warning' ? '⚠️' :
-        '❌';
-
+      const icon =
+        result.status === 'passed'
+          ? '✅'
+          : result.status === 'warning'
+            ? '⚠️'
+            : '❌';
       console.log(`${icon} ${result.name}`);
-      
       if (result.message) {
         console.log(`   └─ ${result.message}`);
       }
-      
       if (result.duration) {
         console.log(`   └─ Duration: ${result.duration}ms`);
       }
-
       if (result.status === 'passed') passed++;
       else if (result.status === 'failed') failed++;
       else if (result.status === 'warning') warnings++;
-
       console.log();
     }
-
     console.log('━'.repeat(50));
     console.log('\n📈 Summary\n');
     console.log(`✅ Passed: ${passed}`);
     console.log(`⚠️ Warnings: ${warnings}`);
     console.log(`❌ Failed: ${failed}`);
     console.log(`📊 Total: ${this.results.length}`);
-
     const successRate = (passed / this.results.length) * 100;
     console.log(`\n🎯 Success Rate: ${successRate.toFixed(1)}%`);
-
     if (failed > 0) {
       console.log('\n⚠️ Some tests failed. Please review the results above.');
       process.exit(1);
@@ -384,27 +348,22 @@ class ProductionTests {
     }
   }
 }
-
 // Executar testes
 async function main() {
   const baseUrl = process.argv[2] || process.env.NEXTAUTH_URL;
-  
   if (!baseUrl) {
     console.error('❌ Please provide a base URL or set NEXTAUTH_URL');
     console.log('Usage: npm run test:production [URL]');
     process.exit(1);
   }
-
   const tester = new ProductionTests(baseUrl);
   await tester.runAllTests();
 }
-
 // Executar apenas se for o script principal
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('❌ Test execution failed:', error);
     process.exit(1);
   });
 }
-
 export { ProductionTests };

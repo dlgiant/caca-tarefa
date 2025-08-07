@@ -1,12 +1,21 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-
 export default function GeneralSettings() {
   return (
     <div className="space-y-6">
@@ -31,7 +40,6 @@ export default function GeneralSettings() {
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="timezone">Fuso Horário</Label>
             <Select defaultValue="america-sao-paulo">
@@ -39,13 +47,16 @@ export default function GeneralSettings() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="america-sao-paulo">América/São Paulo</SelectItem>
-                <SelectItem value="america-new-york">América/Nova York</SelectItem>
+                <SelectItem value="america-sao-paulo">
+                  América/São Paulo
+                </SelectItem>
+                <SelectItem value="america-new-york">
+                  América/Nova York
+                </SelectItem>
                 <SelectItem value="europe-london">Europa/Londres</SelectItem>
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="date-format">Formato de Data</Label>
             <Select defaultValue="dd-mm-yyyy">
@@ -59,7 +70,6 @@ export default function GeneralSettings() {
               </SelectContent>
             </Select>
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="compact-mode">Modo Compacto</Label>
@@ -69,7 +79,6 @@ export default function GeneralSettings() {
             </div>
             <Switch id="compact-mode" />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="animations">Animações</Label>
@@ -81,7 +90,6 @@ export default function GeneralSettings() {
           </div>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Página Inicial</CardTitle>
@@ -104,7 +112,6 @@ export default function GeneralSettings() {
               </SelectContent>
             </Select>
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="items-per-page">Itens por Página</Label>
             <Select defaultValue="25">
@@ -121,7 +128,6 @@ export default function GeneralSettings() {
           </div>
         </CardContent>
       </Card>
-
       <div className="flex justify-end">
         <Button>Salvar Alterações</Button>
       </div>

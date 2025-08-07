@@ -1,7 +1,5 @@
-"use client"
-
-import { Toaster } from "@/components/ui/sonner"
-
+'use client';
+import { Toaster } from '@/components/ui/sonner';
 export function NotificationProvider() {
   return (
     <Toaster
@@ -11,5 +9,5 @@ export function NotificationProvider() {
       closeButton
       duration={5000}
     />
-  )
+  );
 }

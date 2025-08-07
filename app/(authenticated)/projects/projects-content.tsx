@@ -1,8 +1,14 @@
 'use client';
-
 import { Plus, MoreVertical, Users, Calendar, CheckSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -14,12 +20,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-
 const projects = [
   {
     id: '1',
     name: 'Website Redesign',
-    description: 'Modernização completa do site corporativo com novo design e funcionalidades',
+    description:
+      'Modernização completa do site corporativo com novo design e funcionalidades',
     status: 'active',
     progress: 75,
     totalTasks: 24,
@@ -104,26 +110,34 @@ const projects = [
     totalTasks: 12,
     completedTasks: 4,
     dueDate: '2024-05-15',
-    team: [
-      { name: 'Rafael Mendes', avatar: '' },
-    ],
+    team: [{ name: 'Rafael Mendes', avatar: '' }],
     priority: 'medium',
   },
 ];
-
 const statusConfig = {
-  active: { label: 'Ativo', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' },
-  planning: { label: 'Planejamento', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
-  on_hold: { label: 'Pausado', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' },
-  completed: { label: 'Concluído', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200' },
+  active: {
+    label: 'Ativo',
+    color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  },
+  planning: {
+    label: 'Planejamento',
+    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  },
+  on_hold: {
+    label: 'Pausado',
+    color:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  },
+  completed: {
+    label: 'Concluído',
+    color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+  },
 };
-
 const priorityConfig = {
   low: { label: 'Baixa', color: 'border-l-4 border-l-gray-400' },
   medium: { label: 'Média', color: 'border-l-4 border-l-yellow-400' },
   high: { label: 'Alta', color: 'border-l-4 border-l-red-400' },
 };
-
 export default function ProjectsContent() {
   return (
     <>
@@ -139,13 +153,15 @@ export default function ProjectsContent() {
           Novo Projeto
         </Button>
       </div>
-
       {/* Projects Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <Card
             key={project.id}
-            className={priorityConfig[project.priority as keyof typeof priorityConfig].color}
+            className={
+              priorityConfig[project.priority as keyof typeof priorityConfig]
+                .color
+            }
           >
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -153,9 +169,15 @@ export default function ProjectsContent() {
                   <CardTitle>{project.name}</CardTitle>
                   <Badge
                     variant="secondary"
-                    className={statusConfig[project.status as keyof typeof statusConfig].color}
+                    className={
+                      statusConfig[project.status as keyof typeof statusConfig]
+                        .color
+                    }
                   >
-                    {statusConfig[project.status as keyof typeof statusConfig].label}
+                    {
+                      statusConfig[project.status as keyof typeof statusConfig]
+                        .label
+                    }
                   </Badge>
                 </div>
                 <DropdownMenu>
@@ -190,7 +212,6 @@ export default function ProjectsContent() {
                 </div>
                 <Progress value={project.progress} className="h-2" />
               </div>
-
               {/* Stats */}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex items-center gap-2">
@@ -201,7 +222,9 @@ export default function ProjectsContent() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>{new Date(project.dueDate).toLocaleDateString('pt-BR')}</span>
+                  <span>
+                    {new Date(project.dueDate).toLocaleDateString('pt-BR')}
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -211,10 +234,16 @@ export default function ProjectsContent() {
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <div className="flex -space-x-2">
                     {project.team.slice(0, 3).map((member, index) => (
-                      <Avatar key={index} className="h-7 w-7 border-2 border-background">
+                      <Avatar
+                        key={index}
+                        className="h-7 w-7 border-2 border-background"
+                      >
                         <AvatarImage src={member.avatar} />
                         <AvatarFallback className="text-xs">
-                          {member.name.split(' ').map(n => n[0]).join('')}
+                          {member.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
                         </AvatarFallback>
                       </Avatar>
                     ))}

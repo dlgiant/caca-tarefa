@@ -1,17 +1,16 @@
-"use client"
-
-import * as React from "react"
-import { toast } from "sonner"
-import { Plus, FileX } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { 
+'use client';
+import * as React from 'react';
+import { toast } from 'sonner';
+import { Plus, FileX } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue 
-} from "@/components/ui/select"
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -19,34 +18,30 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+} from '@/components/ui/dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   LoadingButton,
   ConfirmDialog,
   FormField,
   DataCard,
   EmptyState,
-} from "@/components/custom"
-
+} from '@/components/custom';
 export function ComponentShowcase() {
-  const [loading, setLoading] = React.useState(false)
-  const [confirmOpen, setConfirmOpen] = React.useState(false)
-  const [formValue, setFormValue] = React.useState("")
-  const [selectValue, setSelectValue] = React.useState("")
-
+  const [loading, setLoading] = React.useState(false);
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const [formValue, setFormValue] = React.useState('');
+  const [selectValue, setSelectValue] = React.useState('');
   const handleLoadingClick = () => {
-    setLoading(true)
+    setLoading(true);
     setTimeout(() => {
-      setLoading(false)
-      toast.success("Ação concluída com sucesso!")
-    }, 2000)
-  }
-
+      setLoading(false);
+      toast.success('Ação concluída com sucesso!');
+    }, 2000);
+  };
   const handleConfirm = () => {
-    toast.info("Ação confirmada!")
-  }
-
+    toast.info('Ação confirmada!');
+  };
   return (
     <div className="space-y-8 p-8">
       {/* Botões */}
@@ -63,7 +58,6 @@ export function ComponentShowcase() {
           </LoadingButton>
         </div>
       </section>
-
       {/* Formulários */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Campos de Formulário</h2>
@@ -100,7 +94,6 @@ export function ComponentShowcase() {
           </div>
         </div>
       </section>
-
       {/* Cards */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Cards</h2>
@@ -109,26 +102,31 @@ export function ComponentShowcase() {
             title="Card de Dados"
             description="Este é um exemplo de card customizado"
             actions={[
-              { label: "Editar", onClick: () => toast.info("Editando...") },
-              { label: "Excluir", onClick: () => setConfirmOpen(true), variant: "destructive" }
+              { label: 'Editar', onClick: () => toast.info('Editando...') },
+              {
+                label: 'Excluir',
+                onClick: () => setConfirmOpen(true),
+                variant: 'destructive',
+              },
             ]}
           >
             <p>Conteúdo do card aqui.</p>
           </DataCard>
-          
           <DataCard
             title="Outro Card"
-            footer={<span className="text-sm text-muted-foreground">Rodapé do card</span>}
+            footer={
+              <span className="text-sm text-muted-foreground">
+                Rodapé do card
+              </span>
+            }
           >
             <p>Mais conteúdo interessante.</p>
           </DataCard>
         </div>
       </section>
-
       {/* Diálogos e Alertas */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Diálogos e Alertas</h2>
-        
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline">Abrir Diálogo</Button>
@@ -137,7 +135,8 @@ export function ComponentShowcase() {
             <DialogHeader>
               <DialogTitle>Título do Diálogo</DialogTitle>
               <DialogDescription>
-                Esta é a descrição do diálogo. Você pode adicionar qualquer conteúdo aqui.
+                Esta é a descrição do diálogo. Você pode adicionar qualquer
+                conteúdo aqui.
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
@@ -145,7 +144,6 @@ export function ComponentShowcase() {
             </div>
           </DialogContent>
         </Dialog>
-
         <Alert>
           <AlertTitle>Atenção!</AlertTitle>
           <AlertDescription>
@@ -153,7 +151,6 @@ export function ComponentShowcase() {
           </AlertDescription>
         </Alert>
       </section>
-
       {/* Estado Vazio */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Estado Vazio</h2>
@@ -163,13 +160,12 @@ export function ComponentShowcase() {
             title="Nenhum item encontrado"
             description="Comece adicionando seu primeiro item"
             action={{
-              label: "Adicionar Item",
-              onClick: () => toast.success("Adicionando novo item...")
+              label: 'Adicionar Item',
+              onClick: () => toast.success('Adicionando novo item...'),
             }}
           />
         </div>
       </section>
-
       {/* Diálogo de Confirmação */}
       <ConfirmDialog
         open={confirmOpen}
@@ -181,25 +177,22 @@ export function ComponentShowcase() {
         onConfirm={handleConfirm}
         variant="destructive"
       />
-
       {/* Notificações */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Notificações (Toast)</h2>
         <div className="flex gap-4 flex-wrap">
-          <Button onClick={() => toast.success("Sucesso!")}>
+          <Button onClick={() => toast.success('Sucesso!')}>
             Toast de Sucesso
           </Button>
-          <Button onClick={() => toast.error("Erro!")}>
-            Toast de Erro
-          </Button>
-          <Button onClick={() => toast.info("Informação!")}>
+          <Button onClick={() => toast.error('Erro!')}>Toast de Erro</Button>
+          <Button onClick={() => toast.info('Informação!')}>
             Toast de Info
           </Button>
-          <Button onClick={() => toast.warning("Aviso!")}>
+          <Button onClick={() => toast.warning('Aviso!')}>
             Toast de Aviso
           </Button>
         </div>
       </section>
     </div>
-  )
+  );
 }

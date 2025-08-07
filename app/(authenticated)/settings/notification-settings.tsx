@@ -1,10 +1,14 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-
 export default function NotificationSettings() {
   return (
     <div className="space-y-6">
@@ -25,7 +29,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="email-tasks" defaultChecked />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-comments">Comentários</Label>
@@ -35,7 +38,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="email-comments" defaultChecked />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-deadlines">Prazos</Label>
@@ -45,7 +47,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="email-deadlines" defaultChecked />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-updates">Atualizações de Projeto</Label>
@@ -55,7 +56,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="email-updates" />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-weekly">Resumo Semanal</Label>
@@ -67,7 +67,6 @@ export default function NotificationSettings() {
           </div>
         </CardContent>
       </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Notificações no Aplicativo</CardTitle>
@@ -85,7 +84,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="app-mentions" defaultChecked />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="app-status">Mudanças de Status</Label>
@@ -95,7 +93,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="app-status" defaultChecked />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="app-assignments">Atribuições</Label>
@@ -105,7 +102,6 @@ export default function NotificationSettings() {
             </div>
             <Switch id="app-assignments" defaultChecked />
           </div>
-
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="app-sounds">Sons de Notificação</Label>
@@ -117,7 +113,6 @@ export default function NotificationSettings() {
           </div>
         </CardContent>
       </Card>
-
       <div className="flex justify-end">
         <Button>Salvar Preferências</Button>
       </div>

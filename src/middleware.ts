@@ -1,66 +1,55 @@
-import { auth } from "@/auth"
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-
+import { auth } from '@/src/auth';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 // Rotas públicas que não precisam de autenticação
 const publicRoutes = [
-  "/",
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-  "/api/auth",
-  "/api/register",
-  "/api/forgot-password",
-  "/api/reset-password"
-]
-
+  '/',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/api/auth',
+  '/api/register',
+  '/api/forgot-password',
+  '/api/reset-password',
+];
 // Rotas que devem redirecionar para dashboard se o usuário estiver logado
 const authRoutes = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password"
-]
-
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+];
 export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  
+  const { pathname } = request.nextUrl;
   // Permitir acesso a recursos estáticos e APIs do NextAuth
   if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api/auth") ||
-    pathname.includes(".")
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/auth') ||
+    pathname.includes('.')
   ) {
-    return NextResponse.next()
+    return NextResponse.next();
   }
-  
-  const session = await auth()
-  
+  const session = await auth();
   // Verificar se é uma rota pública
-  const isPublicRoute = publicRoutes.some(route => 
-    pathname === route || pathname.startsWith(`${route}/`)
-  )
-  
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
   // Verificar se é uma rota de autenticação
-  const isAuthRoute = authRoutes.includes(pathname)
-  
+  const isAuthRoute = authRoutes.includes(pathname);
   // Redirecionar usuários logados tentando acessar páginas de auth
   if (session && isAuthRoute) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
-  
   // Proteger rotas privadas
   if (!session && !isPublicRoute) {
-    const callbackUrl = encodeURIComponent(pathname)
+    const callbackUrl = encodeURIComponent(pathname);
     return NextResponse.redirect(
       new URL(`/login?callbackUrl=${callbackUrl}`, request.url)
-    )
+    );
   }
-  
-  return NextResponse.next()
+  return NextResponse.next();
 }
-
 export const config = {
   matcher: [
     /*
@@ -71,6 +60,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public files (public folder)
      */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\..*|public).*)",
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\..*|public).*)',
   ],
-}
+};

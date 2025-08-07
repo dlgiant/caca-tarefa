@@ -1,5 +1,4 @@
 'use client';
-
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -32,7 +31,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
 const menuItems = [
   {
     title: 'Dashboard',
@@ -60,17 +58,14 @@ const menuItems = [
     icon: User,
   },
 ];
-
 export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/' });
   };
-
   return (
     <>
       {/* Mobile Menu Button */}
@@ -82,7 +77,6 @@ export function Sidebar() {
       >
         {isMobileOpen ? <X /> : <Menu />}
       </Button>
-
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
@@ -90,7 +84,6 @@ export function Sidebar() {
           onClick={() => setIsMobileOpen(false)}
         />
       )}
-
       {/* Sidebar */}
       <aside
         className={cn(
@@ -122,14 +115,12 @@ export function Sidebar() {
               />
             </Button>
           </div>
-
           {/* Navigation */}
           <nav className="flex-1 space-y-1 p-2">
             <TooltipProvider delayDuration={0}>
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
-
                 return (
                   <Tooltip key={item.href}>
                     <TooltipTrigger asChild>
@@ -159,7 +150,6 @@ export function Sidebar() {
               })}
             </TooltipProvider>
           </nav>
-
           {/* User Section */}
           {session && (
             <div className="border-t p-2">

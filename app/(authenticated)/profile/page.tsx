@@ -1,11 +1,9 @@
 import { Metadata } from 'next';
 import ProfileContent from './profile-content';
-
 export const metadata: Metadata = {
   title: 'Perfil | Caça Tarefa',
   description: 'Visualize e edite suas informações pessoais',
 };
-
 export default function ProfilePage() {
   return (
     <div className="space-y-6">
@@ -15,7 +13,6 @@ export default function ProfilePage() {
           Gerencie suas informações pessoais e preferências
         </p>
       </div>
-
       <ProfileContent />
     </div>
   );

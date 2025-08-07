@@ -1,121 +1,99 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
-import { Eye, EyeOff, Loader2, Check, X, AlertCircle } from "lucide-react"
-
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { Eye, EyeOff, Loader2, Check, X, AlertCircle } from 'lucide-react';
 export default function ResetPasswordPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const token = searchParams.get("token")
-  
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
-  const [passwordErrors, setPasswordErrors] = useState<string[]>([])
-  
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [formData, setFormData] = useState({
-    password: "",
-    confirmPassword: ""
-  })
-  
+    password: '',
+    confirmPassword: '',
+  });
   useEffect(() => {
     if (!token) {
-      setError("Token inválido ou expirado")
+      setError('Token inválido ou expirado');
     }
-  }, [token])
-  
+  }, [token]);
   const validatePassword = (password: string) => {
-    const errors: string[] = []
-    
+    const errors: string[] = [];
     if (password.length < 8) {
-      errors.push("Mínimo 8 caracteres")
+      errors.push('Mínimo 8 caracteres');
     }
     if (!/[A-Z]/.test(password)) {
-      errors.push("Uma letra maiúscula")
+      errors.push('Uma letra maiúscula');
     }
     if (!/[a-z]/.test(password)) {
-      errors.push("Uma letra minúscula")
+      errors.push('Uma letra minúscula');
     }
     if (!/[0-9]/.test(password)) {
-      errors.push("Um número")
+      errors.push('Um número');
     }
     if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      errors.push("Um caractere especial")
+      errors.push('Um caractere especial');
     }
-    
-    return errors
-  }
-  
+    return errors;
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-    setError("")
-    
-    if (name === "password") {
-      setPasswordErrors(validatePassword(value))
+      [name]: value,
+    }));
+    setError('');
+    if (name === 'password') {
+      setPasswordErrors(validatePassword(value));
     }
-  }
-  
+  };
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
     if (!token) {
-      setError("Token inválido")
-      return
+      setError('Token inválido');
+      return;
     }
-    
     if (formData.password !== formData.confirmPassword) {
-      setError("As senhas não coincidem")
-      return
+      setError('As senhas não coincidem');
+      return;
     }
-    
     if (passwordErrors.length > 0) {
-      setError("A senha não atende aos requisitos de segurança")
-      return
+      setError('A senha não atende aos requisitos de segurança');
+      return;
     }
-    
-    setIsLoading(true)
-    setError("")
-    
+    setIsLoading(true);
+    setError('');
     try {
-      const response = await fetch("/api/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token,
-          password: formData.password
-        })
-      })
-      
-      const data = await response.json()
-      
+          password: formData.password,
+        }),
+      });
+      const data = await response.json();
       if (!response.ok) {
-        setError(data.error || "Erro ao redefinir senha")
-        return
+        setError(data.error || 'Erro ao redefinir senha');
+        return;
       }
-      
-      setSuccess(true)
-      
+      setSuccess(true);
       // Redirecionar para login após 3 segundos
       setTimeout(() => {
-        router.push("/login")
-      }, 3000)
-      
+        router.push('/login');
+      }, 3000);
     } catch (error) {
-      console.error("Erro ao redefinir senha:", error)
-      setError("Erro ao processar solicitação. Tente novamente.")
+      console.error('Erro ao redefinir senha:', error);
+      setError('Erro ao processar solicitação. Tente novamente.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-  
+  };
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -124,15 +102,12 @@ export default function ResetPasswordPage() {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
               <Check className="h-8 w-8 text-green-600" />
             </div>
-            
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Senha redefinida com sucesso!
             </h2>
-            
             <p className="text-gray-600 mb-6">
               Você será redirecionado para a página de login...
             </p>
-            
             <Link
               href="/login"
               className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -142,9 +117,8 @@ export default function ResetPasswordPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
-  
   if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -153,15 +127,12 @@ export default function ResetPasswordPage() {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <AlertCircle className="h-8 w-8 text-red-600" />
             </div>
-            
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Link inválido
             </h2>
-            
             <p className="text-gray-600 mb-6">
               Este link de recuperação é inválido ou expirou.
             </p>
-            
             <Link
               href="/forgot-password"
               className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -171,9 +142,8 @@ export default function ResetPasswordPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
-  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -182,28 +152,27 @@ export default function ResetPasswordPage() {
             <h2 className="text-3xl font-bold text-gray-900">
               Criar nova senha
             </h2>
-            <p className="mt-2 text-gray-600">
-              Digite sua nova senha abaixo
-            </p>
+            <p className="mt-2 text-gray-600">Digite sua nova senha abaixo</p>
           </div>
-          
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                 {error}
               </div>
             )}
-            
             <div className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Nova senha
                 </label>
                 <div className="mt-1 relative">
                   <input
                     id="password"
                     name="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={formData.password}
                     onChange={handleChange}
@@ -222,15 +191,31 @@ export default function ResetPasswordPage() {
                     )}
                   </button>
                 </div>
-                
                 {formData.password && (
                   <div className="mt-2 space-y-1">
                     {[
-                      { text: "Mínimo 8 caracteres", test: formData.password.length >= 8 },
-                      { text: "Uma letra maiúscula", test: /[A-Z]/.test(formData.password) },
-                      { text: "Uma letra minúscula", test: /[a-z]/.test(formData.password) },
-                      { text: "Um número", test: /[0-9]/.test(formData.password) },
-                      { text: "Um caractere especial", test: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password) }
+                      {
+                        text: 'Mínimo 8 caracteres',
+                        test: formData.password.length >= 8,
+                      },
+                      {
+                        text: 'Uma letra maiúscula',
+                        test: /[A-Z]/.test(formData.password),
+                      },
+                      {
+                        text: 'Uma letra minúscula',
+                        test: /[a-z]/.test(formData.password),
+                      },
+                      {
+                        text: 'Um número',
+                        test: /[0-9]/.test(formData.password),
+                      },
+                      {
+                        text: 'Um caractere especial',
+                        test: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+                          formData.password
+                        ),
+                      },
                     ].map((req, idx) => (
                       <div key={idx} className="flex items-center text-xs">
                         {req.test ? (
@@ -238,7 +223,11 @@ export default function ResetPasswordPage() {
                         ) : (
                           <X className="h-3 w-3 text-red-500 mr-1" />
                         )}
-                        <span className={req.test ? "text-green-700" : "text-gray-600"}>
+                        <span
+                          className={
+                            req.test ? 'text-green-700' : 'text-gray-600'
+                          }
+                        >
                           {req.text}
                         </span>
                       </div>
@@ -246,16 +235,18 @@ export default function ResetPasswordPage() {
                   </div>
                 )}
               </div>
-              
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Confirmar nova senha
                 </label>
                 <div className="mt-1 relative">
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={showConfirmPassword ? 'text' : 'password'}
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
@@ -274,15 +265,21 @@ export default function ResetPasswordPage() {
                     )}
                   </button>
                 </div>
-                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600">As senhas não coincidem</p>
-                )}
+                {formData.confirmPassword &&
+                  formData.password !== formData.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600">
+                      As senhas não coincidem
+                    </p>
+                  )}
               </div>
             </div>
-            
             <button
               type="submit"
-              disabled={isLoading || passwordErrors.length > 0 || formData.password !== formData.confirmPassword}
+              disabled={
+                isLoading ||
+                passwordErrors.length > 0 ||
+                formData.password !== formData.confirmPassword
+              }
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
@@ -291,10 +288,9 @@ export default function ResetPasswordPage() {
                   Redefinindo senha...
                 </>
               ) : (
-                "Redefinir senha"
+                'Redefinir senha'
               )}
             </button>
-            
             <div className="text-center">
               <Link
                 href="/login"
@@ -307,5 +303,5 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

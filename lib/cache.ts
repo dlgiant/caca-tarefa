@@ -1,16 +1,13 @@
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
-
 // Tipos para configuração de cache
 export interface CacheConfig {
   revalidate?: number | false;
   tags?: string[];
 }
-
 // Cache para dados do usuário
 export const getCachedUser = cache(async (userId: string) => {
   const { prisma } = await import('@/lib/prisma');
-  
   return prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -23,18 +20,13 @@ export const getCachedUser = cache(async (userId: string) => {
     },
   });
 });
-
 // Cache para projetos com revalidação
 export const getCachedProjects = unstable_cache(
   async (userId: string) => {
     const { prisma } = await import('@/lib/prisma');
-    
     return prisma.project.findMany({
       where: {
-        OR: [
-          { ownerId: userId },
-          { members: { some: { userId } } },
-        ],
+        OR: [{ ownerId: userId }, { members: { some: { userId } } }],
       },
       include: {
         owner: {
@@ -70,23 +62,16 @@ export const getCachedProjects = unstable_cache(
     tags: ['projects'],
   }
 );
-
 // Cache para tarefas com revalidação
 export const getCachedTasks = unstable_cache(
   async (userId: string, projectId?: string) => {
     const { prisma } = await import('@/lib/prisma');
-    
     const where: any = {
-      OR: [
-        { assigneeId: userId },
-        { creatorId: userId },
-      ],
+      OR: [{ assigneeId: userId }, { creatorId: userId }],
     };
-
     if (projectId) {
       where.projectId = projectId;
     }
-
     return prisma.task.findMany({
       where,
       include: {
@@ -112,10 +97,7 @@ export const getCachedTasks = unstable_cache(
           },
         },
       },
-      orderBy: [
-        { priority: 'desc' },
-        { dueDate: 'asc' },
-      ],
+      orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
     });
   },
   ['tasks'],
@@ -124,12 +106,10 @@ export const getCachedTasks = unstable_cache(
     tags: ['tasks'],
   }
 );
-
 // Cache para estatísticas do dashboard
 export const getCachedDashboardStats = unstable_cache(
   async (userId: string) => {
     const { prisma } = await import('@/lib/prisma');
-    
     const [
       totalProjects,
       activeProjects,
@@ -140,54 +120,36 @@ export const getCachedDashboardStats = unstable_cache(
     ] = await Promise.all([
       prisma.project.count({
         where: {
-          OR: [
-            { ownerId: userId },
-            { members: { some: { userId } } },
-          ],
+          OR: [{ ownerId: userId }, { members: { some: { userId } } }],
         },
       }),
       prisma.project.count({
         where: {
-          OR: [
-            { ownerId: userId },
-            { members: { some: { userId } } },
-          ],
+          OR: [{ ownerId: userId }, { members: { some: { userId } } }],
           status: 'ACTIVE',
         },
       }),
       prisma.task.count({
         where: {
-          OR: [
-            { assigneeId: userId },
-            { creatorId: userId },
-          ],
+          OR: [{ assigneeId: userId }, { creatorId: userId }],
         },
       }),
       prisma.task.count({
         where: {
-          OR: [
-            { assigneeId: userId },
-            { creatorId: userId },
-          ],
+          OR: [{ assigneeId: userId }, { creatorId: userId }],
           status: 'COMPLETED',
         },
       }),
       prisma.task.count({
         where: {
-          OR: [
-            { assigneeId: userId },
-            { creatorId: userId },
-          ],
+          OR: [{ assigneeId: userId }, { creatorId: userId }],
           status: { not: 'COMPLETED' },
           dueDate: { lt: new Date() },
         },
       }),
       prisma.task.count({
         where: {
-          OR: [
-            { assigneeId: userId },
-            { creatorId: userId },
-          ],
+          OR: [{ assigneeId: userId }, { creatorId: userId }],
           status: { not: 'COMPLETED' },
           dueDate: {
             gte: new Date(),
@@ -196,7 +158,6 @@ export const getCachedDashboardStats = unstable_cache(
         },
       }),
     ]);
-
     return {
       totalProjects,
       activeProjects,
@@ -213,21 +174,17 @@ export const getCachedDashboardStats = unstable_cache(
     tags: ['dashboard'],
   }
 );
-
 // Função para revalidar cache por tag
 export async function revalidateCache(tags: string[]) {
   const { revalidateTag } = await import('next/cache');
-  
   for (const tag of tags) {
     revalidateTag(tag);
   }
 }
-
 // Cache para configurações do usuário
 export const getCachedUserSettings = unstable_cache(
   async (userId: string) => {
     const { prisma } = await import('@/lib/prisma');
-    
     return prisma.userSettings.findUnique({
       where: { userId },
     });
@@ -238,12 +195,10 @@ export const getCachedUserSettings = unstable_cache(
     tags: ['settings'],
   }
 );
-
 // Cache para notificações
 export const getCachedNotifications = unstable_cache(
   async (userId: string, unreadOnly = false) => {
     const { prisma } = await import('@/lib/prisma');
-    
     return prisma.notification.findMany({
       where: {
         userId,
@@ -259,17 +214,14 @@ export const getCachedNotifications = unstable_cache(
     tags: ['notifications'],
   }
 );
-
 // Configuração de cache para páginas estáticas
 export const staticPageCache: CacheConfig = {
   revalidate: 3600, // 1 hora
 };
-
 // Configuração de cache para dados dinâmicos
 export const dynamicDataCache: CacheConfig = {
   revalidate: 60, // 1 minuto
 };
-
 // Configuração de cache para dados em tempo real
 export const realtimeDataCache: CacheConfig = {
   revalidate: 10, // 10 segundos

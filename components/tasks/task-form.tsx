@@ -1,21 +1,19 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { TaskInput, taskSchema } from "@/src/lib/validations/task";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { TaskInput, taskSchema } from '@/src/lib/validations/task';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Form,
   FormControl,
@@ -24,38 +22,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Calendar } from "@/components/ui/calendar";
+} from '@/components/ui/form';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { toast } from "sonner";
-
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { CalendarIcon, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 interface TaskFormProps {
   task?: any; // Em produção, use um tipo apropriado
   onSuccess?: () => void;
   onCancel?: () => void;
 }
-
 export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
-
   const form = useForm<TaskInput>({
-    resolver: zodResolver(taskSchema),
+    resolver: zodResolver(taskSchema) as any,
     defaultValues: {
-      title: task?.title || "",
-      description: task?.description || "",
-      priority: task?.priority || "MEDIUM",
+      title: task?.title || '',
+      description: task?.description || '',
+      priority: task?.priority || 'MEDIUM',
       dueDate: task?.dueDate || null,
       categoryId: task?.categoryId || null,
       projectId: task?.projectId || null,
@@ -63,66 +58,57 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
       completed: task?.completed || false,
     },
   });
-
   // Carregar categorias, projetos e tags disponíveis
   useEffect(() => {
     const loadData = async () => {
       try {
         // Carregar categorias
-        const categoriesRes = await fetch("/api/categories");
+        const categoriesRes = await fetch('/api/categories');
         if (categoriesRes.ok) {
           const data = await categoriesRes.json();
           setCategories(data);
         }
-
         // Carregar projetos
-        const projectsRes = await fetch("/api/projects");
+        const projectsRes = await fetch('/api/projects');
         if (projectsRes.ok) {
           const data = await projectsRes.json();
           setProjects(data);
         }
-
         // Carregar tags
-        const tagsRes = await fetch("/api/tags");
+        const tagsRes = await fetch('/api/tags');
         if (tagsRes.ok) {
           const data = await tagsRes.json();
           setAvailableTags(data.map((t: any) => t.name));
         }
       } catch (error) {
-        console.error("Erro ao carregar dados:", error);
+        console.error('Erro ao carregar dados:', error);
       }
     };
-
     loadData();
   }, []);
-
   const onSubmit = async (data: TaskInput) => {
     setIsLoading(true);
     try {
-      const url = task ? `/api/tasks/${task.id}` : "/api/tasks";
-      const method = task ? "PUT" : "POST";
-
+      const url = task ? `/api/tasks/${task.id}` : '/api/tasks';
+      const method = task ? 'PUT' : 'POST';
       const response = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Erro ao salvar tarefa");
+        throw new Error(error.error || 'Erro ao salvar tarefa');
       }
-
-      toast.success(task ? "Tarefa atualizada!" : "Tarefa criada!");
+      toast.success(task ? 'Tarefa atualizada!' : 'Tarefa criada!');
       router.refresh();
       onSuccess?.();
     } catch (error: any) {
-      toast.error(error.message || "Erro ao salvar tarefa");
+      toast.error(error.message || 'Erro ao salvar tarefa');
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -139,7 +125,6 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="description"
@@ -157,7 +142,6 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             </FormItem>
           )}
         />
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -165,7 +149,10 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Prioridade</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione a prioridade" />
@@ -182,7 +169,6 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="dueDate"
@@ -195,12 +181,12 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
                       <Button
                         variant="outline"
                         className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          'w-full pl-3 text-left font-normal',
+                          !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value ? (
-                          format(new Date(field.value), "PPP", { locale: ptBR })
+                          format(new Date(field.value), 'PPP', { locale: ptBR })
                         ) : (
                           <span>Selecione uma data</span>
                         )}
@@ -225,7 +211,6 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             )}
           />
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -233,8 +218,8 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Categoria</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
+                <Select
+                  onValueChange={field.onChange}
                   defaultValue={field.value || undefined}
                 >
                   <FormControl>
@@ -261,15 +246,14 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="projectId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Projeto</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
+                <Select
+                  onValueChange={field.onChange}
                   defaultValue={field.value || undefined}
                 >
                   <FormControl>
@@ -291,7 +275,6 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             )}
           />
         </div>
-
         <FormField
           control={form.control}
           name="tags"
@@ -301,10 +284,10 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
               <FormControl>
                 <Input
                   placeholder="Digite as tags separadas por vírgula"
-                  value={field.value?.join(", ") || ""}
+                  value={field.value?.join(', ') || ''}
                   onChange={(e) => {
                     const tags = e.target.value
-                      .split(",")
+                      .split(',')
                       .map((tag) => tag.trim())
                       .filter(Boolean);
                     field.onChange(tags);
@@ -318,7 +301,6 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
             </FormItem>
           )}
         />
-
         <div className="flex justify-end space-x-2">
           {onCancel && (
             <Button
@@ -332,7 +314,7 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
           )}
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {task ? "Atualizar" : "Criar"} Tarefa
+            {task ? 'Atualizar' : 'Criar'} Tarefa
           </Button>
         </div>
       </form>

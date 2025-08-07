@@ -1,5 +1,4 @@
 import { Skeleton } from '@/components/ui/skeleton';
-
 export function PageSkeleton() {
   return (
     <div className="space-y-6">
@@ -21,7 +20,6 @@ export function PageSkeleton() {
     </div>
   );
 }
-
 export function TableSkeleton() {
   return (
     <div className="space-y-4">
@@ -54,7 +52,6 @@ export function TableSkeleton() {
     </div>
   );
 }
-
 export function CardSkeleton() {
   return (
     <div className="rounded-lg border bg-card p-6">
@@ -70,7 +67,6 @@ export function CardSkeleton() {
     </div>
   );
 }
-
 export function DashboardSkeleton() {
   return (
     <div className="space-y-6">

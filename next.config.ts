@@ -1,5 +1,4 @@
 import type { NextConfig } from 'next';
-
 const nextConfig: NextConfig = {
   // Otimizações de imagem
   images: {
@@ -14,17 +13,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-
   // Otimizações de build
   productionBrowserSourceMaps: false,
   compress: true,
   poweredByHeader: false,
   generateEtags: true,
-
   // Configurações de performance
   reactStrictMode: true,
   swcMinify: true,
-
   // Configurações de segurança
   headers: async () => [
     {
@@ -74,7 +70,6 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
-
   // Configuração experimental para otimizações
   experimental: {
     optimizeCss: true,
@@ -86,7 +81,6 @@ const nextConfig: NextConfig = {
       '@tanstack/react-query',
     ],
   },
-
   // Webpack customization para otimizações
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -105,8 +99,10 @@ const nextConfig: NextConfig = {
           },
           lib: {
             test(module: any) {
-              return module.size() > 160000 &&
-                /node_modules[\\/]/.test(module.identifier());
+              return (
+                module.size() > 160000 &&
+                /node_modules[\\/]/.test(module.identifier())
+              );
             },
             name(module: any) {
               const hash = require('crypto')
@@ -128,7 +124,12 @@ const nextConfig: NextConfig = {
             name(module: any, chunks: any) {
               const hash = require('crypto')
                 .createHash('sha1')
-                .update(chunks.reduce((acc: string, chunk: any) => acc + chunk.name, ''))
+                .update(
+                  chunks.reduce(
+                    (acc: string, chunk: any) => acc + chunk.name,
+                    ''
+                  )
+                )
                 .digest('hex');
               return `shared-${hash.substring(0, 8)}`;
             },
@@ -142,5 +143,4 @@ const nextConfig: NextConfig = {
     return config;
   },
 };
-
 export default nextConfig;

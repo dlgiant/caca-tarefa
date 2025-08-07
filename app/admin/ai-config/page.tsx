@@ -1,47 +1,45 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { Bot, Save, Settings } from 'lucide-react';
 import { toast } from 'sonner';
-
 const CLAUDE_MODELS = [
-  { 
-    id: 'claude-3-5-sonnet-20241022', 
+  {
+    id: 'claude-3-5-sonnet-20241022',
     name: 'Claude 3.5 Sonnet',
-    description: 'Modelo mais recente e poderoso, ideal para tarefas complexas'
+    description: 'Modelo mais recente e poderoso, ideal para tarefas complexas',
   },
-  { 
-    id: 'claude-3-5-haiku-20241022', 
+  {
+    id: 'claude-3-5-haiku-20241022',
     name: 'Claude 3.5 Haiku',
-    description: 'Modelo rápido e eficiente para tarefas simples'
+    description: 'Modelo rápido e eficiente para tarefas simples',
   },
-  { 
-    id: 'claude-3-opus-20240229', 
+  {
+    id: 'claude-3-opus-20240229',
     name: 'Claude 3 Opus',
-    description: 'Modelo anterior mais poderoso, ótimo para análises profundas'
+    description: 'Modelo anterior mais poderoso, ótimo para análises profundas',
   },
-  { 
-    id: 'claude-3-sonnet-20240229', 
+  {
+    id: 'claude-3-sonnet-20240229',
     name: 'Claude 3 Sonnet',
-    description: 'Modelo balanceado para uso geral'
+    description: 'Modelo balanceado para uso geral',
   },
-  { 
-    id: 'claude-3-haiku-20240307', 
+  {
+    id: 'claude-3-haiku-20240307',
     name: 'Claude 3 Haiku',
-    description: 'Modelo mais rápido e econômico'
-  }
+    description: 'Modelo mais rápido e econômico',
+  },
 ];
-
 export default function AIConfigPage() {
   const [selectedModel, setSelectedModel] = useState('');
-  const [currentModel, setCurrentModel] = useState<{ name: string; displayName: string } | null>(null);
+  const [currentModel, setCurrentModel] = useState<{
+    name: string;
+    displayName: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
   useEffect(() => {
     fetchCurrentConfig();
   }, []);
-
   const fetchCurrentConfig = async () => {
     setIsLoading(true);
     try {
@@ -58,11 +56,9 @@ export default function AIConfigPage() {
       setIsLoading(false);
     }
   };
-
   const handleSave = async () => {
-    const model = CLAUDE_MODELS.find(m => m.id === selectedModel);
+    const model = CLAUDE_MODELS.find((m) => m.id === selectedModel);
     if (!model) return;
-
     setIsSaving(true);
     try {
       const response = await fetch('/api/admin/ai-config', {
@@ -70,10 +66,9 @@ export default function AIConfigPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           modelId: model.id,
-          displayName: model.name
-        })
+          displayName: model.name,
+        }),
       });
-
       if (response.ok) {
         const data = await response.json();
         setCurrentModel(data.model);
@@ -88,7 +83,6 @@ export default function AIConfigPage() {
       setIsSaving(false);
     }
   };
-
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="mb-8">
@@ -100,7 +94,6 @@ export default function AIConfigPage() {
           Configure o modelo Claude para o assistente virtual
         </p>
       </div>
-
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
@@ -122,12 +115,10 @@ export default function AIConfigPage() {
               </p>
             </div>
           )}
-
           {/* Seleção de Modelo */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">Selecionar Modelo</h2>
-              
               <div className="space-y-3">
                 {CLAUDE_MODELS.map((model) => (
                   <label
@@ -164,12 +155,15 @@ export default function AIConfigPage() {
               </div>
             </div>
           </div>
-
           {/* Botão Salvar */}
           <div className="flex justify-end">
             <button
               onClick={handleSave}
-              disabled={isSaving || !selectedModel || selectedModel === currentModel?.name}
+              disabled={
+                isSaving ||
+                !selectedModel ||
+                selectedModel === currentModel?.name
+              }
               className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isSaving ? (
@@ -185,7 +179,6 @@ export default function AIConfigPage() {
               )}
             </button>
           </div>
-
           {/* Informações Adicionais */}
           <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mt-8">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
@@ -194,11 +187,16 @@ export default function AIConfigPage() {
             <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
-                <span>A mudança de modelo afeta imediatamente todas as conversas do assistente</span>
+                <span>
+                  A mudança de modelo afeta imediatamente todas as conversas do
+                  assistente
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
-                <span>Modelos Sonnet são balanceados entre velocidade e qualidade</span>
+                <span>
+                  Modelos Sonnet são balanceados entre velocidade e qualidade
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
@@ -206,11 +204,16 @@ export default function AIConfigPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
-                <span>Modelo Opus oferece a melhor qualidade mas é mais lento</span>
+                <span>
+                  Modelo Opus oferece a melhor qualidade mas é mais lento
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-purple-600">•</span>
-                <span>Certifique-se de que sua chave API tem acesso ao modelo selecionado</span>
+                <span>
+                  Certifique-se de que sua chave API tem acesso ao modelo
+                  selecionado
+                </span>
               </li>
             </ul>
           </div>

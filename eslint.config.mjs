@@ -20,6 +20,13 @@ const eslintConfig = [
     rules: {
       ...prettierConfig.rules,
       'prettier/prettier': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+      'react-hooks/exhaustive-deps': 'warn',
+      '@typescript-eslint/no-unsafe-declaration-merging': 'warn',
+      '@typescript-eslint/no-unsafe-function-type': 'warn',
+      '@typescript-eslint/no-require-imports': 'warn',
+      '@next/next/no-assign-module-variable': 'warn'
     },
   },
 ];
