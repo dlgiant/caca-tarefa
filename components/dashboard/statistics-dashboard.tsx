@@ -1,46 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Activity,
-  CheckCircle2,
-  Clock,
-  TrendingUp,
-  Users,
-  Calendar,
-  Target,
-  AlertTriangle,
-} from 'lucide-react';
-import {
-  format,
-  startOfWeek,
-  endOfWeek,
-  startOfMonth,
-  endOfMonth,
-} from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 interface DashboardStats {
   totalTasks: number;
   completedTasks: number;
