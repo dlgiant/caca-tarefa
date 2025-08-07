@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/ai-service';
-import { getServerSession } from '@/lib/auth'
+import { getServerSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 export async function POST(req: NextRequest) {
   try {
@@ -31,7 +31,12 @@ export async function POST(req: NextRequest) {
             data: {
               title: commandResult.parameters.title,
               description: commandResult.parameters.description || '',
-              priority: (commandResult.parameters.priority?.toUpperCase() as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT') || 'MEDIUM',
+              priority:
+                (commandResult.parameters.priority?.toUpperCase() as
+                  | 'LOW'
+                  | 'MEDIUM'
+                  | 'HIGH'
+                  | 'URGENT') || 'MEDIUM',
               status: 'TODO',
               userId: session.user.id,
               dueDate: commandResult.parameters.dueDate

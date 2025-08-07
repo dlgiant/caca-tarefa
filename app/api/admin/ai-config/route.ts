@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAIService } from '@/lib/ai/ai-service';
-import { getServerSession } from '@/lib/auth'
+import { getServerSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 export async function GET(_req: NextRequest) {
   try {
