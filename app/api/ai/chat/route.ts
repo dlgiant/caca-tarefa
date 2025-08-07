@@ -77,13 +77,13 @@ export async function POST(req: NextRequest) {
         } else {
           response = '📋 **Suas tarefas pendentes:**\n\n';
           tasks.forEach((task: any, index: number) => {
-            const priorityEmoji =
-              {
-                HIGH: '🔴',
-                URGENT: '🔴',
-                MEDIUM: '🟡',
-                LOW: '🟢',
-              }[task.priority] || '⚪';
+            const priorityMap: Record<string, string> = {
+              HIGH: '🔴',
+              URGENT: '🔴',
+              MEDIUM: '🟡',
+              LOW: '🟢',
+            };
+            const priorityEmoji = priorityMap[task.priority] || '⚪';
             response += `${index + 1}. ${priorityEmoji} ${task.title}`;
             if (task.dueDate) {
               response += ` (Prazo: ${new Date(task.dueDate).toLocaleDateString('pt-BR')})`;
