@@ -91,7 +91,7 @@
     "prisma": "^6.13.0",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0",
-    "react": "19.1.0",
+    "react": "19.1.1",
     "react-big-calendar": "^1.19.4",
     "react-datepicker": "^8.4.0",
     "react-day-picker": "^9.8.1",
