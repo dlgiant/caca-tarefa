@@ -13,7 +13,6 @@ import {
   Globe,
   Sparkles,
   Star,
-  Heart,
   Smile,
   Trophy,
   Gamepad2,

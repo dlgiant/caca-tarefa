@@ -11,21 +11,13 @@ import {
 } from '@/components/ui/card';
 import { ThemeToggle } from '@/components/custom/theme-toggle';
 import {
-  CheckCircle2,
-  ListTodo,
   Users,
   Brain,
   Calendar,
-  BarChart3,
   Shield,
-  Zap,
   Target,
-  Clock,
-  FolderOpen,
-  MessageSquare,
   ChevronRight,
   Star,
-  TrendingUp,
   Sparkles,
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
