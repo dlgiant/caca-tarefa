@@ -81,8 +81,9 @@ export class AIService {
       });
       let content = '';
       if (!options.stream) {
+        const message = response as Anthropic.Message;
         content =
-          response.content[0].type === 'text' ? response.content[0].text : '';
+          message.content[0].type === 'text' ? message.content[0].text : '';
       } else {
         // Stream handling será implementado separadamente
         return response as any;

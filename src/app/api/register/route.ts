@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const validationResult = registerSchema.safeParse(body);
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Dados inválidos', details: validationResult.error.errors },
+        { error: 'Dados inválidos', details: validationResult.error.issues },
         { status: 400 }
       );
     }

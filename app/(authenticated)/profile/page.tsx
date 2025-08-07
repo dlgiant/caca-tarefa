@@ -1,9 +1,6 @@
-import { Metadata } from 'next';
+'use client';
+
 import ProfileContent from './profile-content';
-export const metadata: Metadata = {
-  title: 'Perfil | Caça Tarefa',
-  description: 'Visualize e edite suas informações pessoais',
-};
 export default function ProfilePage() {
   return (
     <div className="space-y-6">

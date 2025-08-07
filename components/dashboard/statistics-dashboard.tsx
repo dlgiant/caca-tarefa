@@ -1,5 +1,36 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+import {
+  Target,
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  TrendingUp,
+  Activity,
+} from 'lucide-react';
 interface DashboardStats {
   totalTasks: number;
   completedTasks: number;
@@ -29,10 +60,8 @@ export function StatisticsDashboard() {
     'month'
   );
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    fetchDashboardStats();
-  }, [timeRange]);
-  const fetchDashboardStats = async () => {
+
+  const fetchDashboardStats = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/dashboard/stats?range=${timeRange}`);
@@ -43,7 +72,11 @@ export function StatisticsDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange]);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [fetchDashboardStats]);
   if (loading || !stats) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -88,7 +121,9 @@ export function StatisticsDashboard() {
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <Tabs
           value={timeRange}
-          onValueChange={(value) => setTimeRange(value as any)}
+          onValueChange={(value) =>
+            setTimeRange(value as 'week' | 'month' | 'year')
+          }
         >
           <TabsList>
             <TabsTrigger value="week">Semana</TabsTrigger>
@@ -172,14 +207,18 @@ export function StatisticsDashboard() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
+                  label={({
+                    name,
+                    percent,
+                  }: {
+                    name: string;
+                    percent?: number;
+                  }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {stats.tasksByStatus.map((entry, index) => (
+                  {stats.tasksByStatus.map((_entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={

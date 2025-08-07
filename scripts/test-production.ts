@@ -65,7 +65,7 @@ class ProductionTests {
       });
       const duration = Date.now() - startTime;
       if (response.ok) {
-        const data = await response.json();
+        await response.json();
         this.results.push({
           name: 'Database Connection',
           status: 'passed',

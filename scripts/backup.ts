@@ -11,7 +11,7 @@
  */
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { writeFile, readFile, unlink } from 'fs/promises';
+import { unlink } from 'fs/promises';
 import { join } from 'path';
 import { config } from 'dotenv';
 const execAsync = promisify(exec);
@@ -261,4 +261,5 @@ async function main() {
 if (require.main === module) {
   main();
 }
-export { DatabaseBackup, BackupConfig };
+export { DatabaseBackup };
+export type { BackupConfig };

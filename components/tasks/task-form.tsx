@@ -44,7 +44,7 @@ export function TaskForm({ task, onSuccess, onCancel }: TaskFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [projects, setProjects] = useState<any[]>([]);
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [_availableTags, setAvailableTags] = useState<string[]>([]);
   const form = useForm<TaskInput>({
     resolver: zodResolver(taskSchema) as any,
     defaultValues: {

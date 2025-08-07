@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 // Tipos
 interface RateLimitConfig {
   interval: number; // Em milissegundos
   uniqueTokenPerInterval: number; // Número de tokens únicos por intervalo
   maxRequests: number; // Máximo de requisições por token
-}
-interface RateLimitStore {
-  [key: string]: {
-    count: number;
-    resetTime: number;
-  };
 }
 // Configurações padrão
 const DEFAULT_CONFIG: RateLimitConfig = {

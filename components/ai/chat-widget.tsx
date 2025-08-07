@@ -91,8 +91,8 @@ export function ChatWidget({
       if (data.suggestions) {
         setSuggestions(data.suggestions);
       }
-    } catch (error) {
-      console.error('Erro:', error);
+    } catch (_error) {
+      console.error('Erro:', _error);
       toast.error('Erro ao processar sua mensagem. Tente novamente.');
       const errorMessage: ChatMessage = {
         id: Date.now().toString(),

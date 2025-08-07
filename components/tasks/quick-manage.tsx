@@ -40,7 +40,7 @@ export function QuickManage() {
         const error = await response.json();
         toast.error(error.error || 'Erro ao criar categoria');
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Erro ao criar categoria');
     }
   };
@@ -67,7 +67,7 @@ export function QuickManage() {
         const error = await response.json();
         toast.error(error.error || 'Erro ao criar projeto');
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Erro ao criar projeto');
     }
   };

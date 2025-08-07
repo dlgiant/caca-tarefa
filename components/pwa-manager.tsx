@@ -115,12 +115,6 @@ export function PWAManager() {
       window.location.reload();
     }
   };
-  const clearCache = async () => {
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' });
-      toast.success('Cache limpo com sucesso!');
-    }
-  };
   // Componente de banner de instalação
   if (isInstallable && !localStorage.getItem('pwa-install-banner-dismissed')) {
     return (

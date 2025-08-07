@@ -33,13 +33,13 @@ class Analytics {
   private batchTimer?: NodeJS.Timeout;
   constructor() {
     this.sessionId = this.generateSessionId();
-    this.isProduction = process.env.NODE_ENV === 'production';
+    this.isProduction = false; // Disabled until analytics endpoints are implemented
     // Inicia o batch processing
     if (this.isProduction) {
       this.startBatchProcessing();
     }
     // Registra métricas de Web Vitals
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && this.isProduction) {
       this.registerWebVitals();
       this.registerErrorHandlers();
     }

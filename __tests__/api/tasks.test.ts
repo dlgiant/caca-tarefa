@@ -143,7 +143,9 @@ describe('/api/tasks', () => {
           body: JSON.stringify(updates),
         }
       );
-      const response = await PUT(request, { params: { id: taskId } });
+      const response = await PUT(request, {
+        params: Promise.resolve({ id: taskId }),
+      });
       const data = await response.json();
       expect(response.status).toBe(200);
       expect(data.id).toBe(taskId);
@@ -160,7 +162,9 @@ describe('/api/tasks', () => {
           body: JSON.stringify({ title: 'Updated' }),
         }
       );
-      const response = await PUT(request, { params: { id: taskId } });
+      const response = await PUT(request, {
+        params: Promise.resolve({ id: taskId }),
+      });
       expect(response.status).toBe(404);
     });
   });
@@ -178,7 +182,9 @@ describe('/api/tasks', () => {
           method: 'DELETE',
         }
       );
-      const response = await DELETE(request, { params: { id: taskId } });
+      const response = await DELETE(request, {
+        params: Promise.resolve({ id: taskId }),
+      });
       const data = await response.json();
       expect(response.status).toBe(200);
       expect(data.message).toBeDefined();
@@ -195,7 +201,9 @@ describe('/api/tasks', () => {
           method: 'DELETE',
         }
       );
-      const response = await DELETE(request, { params: { id: taskId } });
+      const response = await DELETE(request, {
+        params: Promise.resolve({ id: taskId }),
+      });
       expect(response.status).toBe(404);
       expect(prisma.task.delete).not.toHaveBeenCalled();
     });

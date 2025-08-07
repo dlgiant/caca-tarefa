@@ -62,10 +62,10 @@ export function useLazyComponent<T = any>(
     };
   }, [threshold, rootMargin]);
   // Componente lazy carregado dinamicamente
-  const LazyComponent = dynamic(
+  const LazyComponent = dynamic<T>(
     () => {
       if (delay > 0) {
-        return new Promise((resolve) => {
+        return new Promise<{ default: ComponentType<T> }>((resolve) => {
           setTimeout(() => {
             importFn()
               .then(resolve)
@@ -92,7 +92,7 @@ export function useLazyComponent<T = any>(
     // Força re-render
     setTimeout(() => setIsInView(true), 0);
   };
-  const Component = ({ ...props }: T) => {
+  const Component = (props: T) => {
     if (error) {
       return <>{errorComponent || <DefaultErrorComponent retry={retry} />}</>;
     }
@@ -101,7 +101,7 @@ export function useLazyComponent<T = any>(
     }
     return (
       <Suspense fallback={loadingComponent}>
-        <LazyComponent {...props} />
+        <LazyComponent {...(props as any)} />
       </Suspense>
     );
   };
@@ -142,7 +142,7 @@ export function createLazyComponent<T = any>(
 // Hook para lazy loading de múltiplos componentes
 export function useLazyComponents<T extends Record<string, () => Promise<any>>>(
   components: T,
-  options: UseLazyComponentOptions = {}
+  _options: UseLazyComponentOptions = {}
 ) {
   const [loadedComponents, setLoadedComponents] = useState<
     Partial<Record<keyof T, ComponentType<any>>>
@@ -168,7 +168,7 @@ export function useLazyComponents<T extends Record<string, () => Promise<any>>>(
     }
   };
   const preloadAll = async () => {
-    const promises = Object.entries(components).map(([name, importFn]) =>
+    const promises = Object.entries(components).map(([name]) =>
       load(name as keyof T)
     );
     await Promise.all(promises);

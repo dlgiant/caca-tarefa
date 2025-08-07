@@ -1,12 +1,9 @@
-import { Metadata } from 'next';
+'use client';
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import GeneralSettings from './general-settings';
 import NotificationSettings from './notification-settings';
 import SecuritySettings from './security-settings';
-export const metadata: Metadata = {
-  title: 'Configurações | Caça Tarefa',
-  description: 'Personalize suas preferências e configurações',
-};
 export default function SettingsPage() {
   return (
     <div className="space-y-6">

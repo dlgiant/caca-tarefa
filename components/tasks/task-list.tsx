@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -38,7 +37,6 @@ import { TaskForm } from './task-form';
 import { toast } from 'sonner';
 import {
   Search,
-  Filter,
   Plus,
   MoreVertical,
   Edit,
@@ -47,8 +45,6 @@ import {
   Calendar,
   Tag,
   Flag,
-  CheckCircle,
-  Circle,
   AlertCircle,
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -209,7 +205,6 @@ function SortableTaskItem({ task, onToggle, onEdit, onDelete }: any) {
   );
 }
 export function TaskList() {
-  const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -217,7 +212,7 @@ export function TaskList() {
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('createdAt');
-  const [sortOrder, setSortOrder] = useState<string>('desc');
+  const [sortOrder, _setSortOrder] = useState<string>('desc');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);

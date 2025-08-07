@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import {
   Bell,
-  Check,
   X,
   AlertCircle,
   Info,
@@ -66,7 +65,17 @@ const notificationColors = {
   PROJECT_UPDATE: 'text-blue-500',
 };
 export function NotificationCenter() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<
+    Array<{
+      id: string;
+      type: string;
+      title: string;
+      message: string;
+      read: boolean;
+      createdAt: string;
+      metadata?: any;
+    }>
+  >([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
@@ -81,8 +90,8 @@ export function NotificationCenter() {
       const data = await response.json();
       setNotifications(data);
       setUnreadCount(data.filter((n: Notification) => !n.read).length);
-    } catch (error) {
-      console.error('Erro ao buscar notificações:', error);
+    } catch (_error) {
+      console.error('Erro ao buscar notificações:', _error);
     }
   };
   const markAsRead = async (notificationId: string) => {
@@ -127,7 +136,11 @@ export function NotificationCenter() {
       console.error('Erro ao deletar notificação:', error);
     }
   };
-  const handleNotificationClick = (notification: Notification) => {
+  const handleNotificationClick = (notification: {
+    id: string;
+    read: boolean;
+    link?: string;
+  }) => {
     if (!notification.read) {
       markAsRead(notification.id);
     }
@@ -172,8 +185,14 @@ export function NotificationCenter() {
             </div>
           ) : (
             notifications.map((notification) => {
-              const Icon = notificationIcons[notification.type];
-              const colorClass = notificationColors[notification.type];
+              const Icon =
+                notificationIcons[
+                  notification.type as keyof typeof notificationIcons
+                ];
+              const colorClass =
+                notificationColors[
+                  notification.type as keyof typeof notificationColors
+                ];
               return (
                 <DropdownMenuItem
                   key={notification.id}

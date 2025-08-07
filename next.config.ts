@@ -121,7 +121,7 @@ const nextConfig: NextConfig = {
             priority: 20,
           },
           shared: {
-            name(module: any, chunks: any) {
+            name(_module: any, chunks: any) {
               const hash = require('crypto')
                 .createHash('sha1')
                 .update(

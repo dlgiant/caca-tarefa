@@ -47,7 +47,6 @@ export class RateLimiter {
         resetTime: new Date(now + this.config.windowMs),
       };
     }
-    const timeRemaining = this.config.windowMs - (now - userUsage.windowStart);
     return {
       requestsUsed: userUsage.requests,
       requestsRemaining: Math.max(
@@ -74,7 +73,7 @@ export class RateLimiter {
     //   create: { userId, requests: usage.requests, windowStart: new Date(usage.windowStart) }
     // });
   }
-  async loadFromDatabase(userId: string): Promise<void> {
+  async loadFromDatabase(_userId: string): Promise<void> {
     // Implementar carregamento do banco
     // const data = await db.rateLimits.findUnique({ where: { userId } });
     // if (data) {

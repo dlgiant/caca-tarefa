@@ -60,12 +60,17 @@ const menuItems = [
 ];
 export function Sidebar() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/' });
   };
+
+  // Don't render anything until session is loaded
+  if (status === 'loading') {
+    return null;
+  }
   return (
     <>
       {/* Mobile Menu Button */}
@@ -151,7 +156,7 @@ export function Sidebar() {
             </TooltipProvider>
           </nav>
           {/* User Section */}
-          {session && (
+          {session?.user && (
             <div className="border-t p-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

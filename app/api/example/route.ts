@@ -10,7 +10,7 @@ async function handler(req: NextRequest) {
       method: req.method,
     };
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Erro ao processar requisição' },
       { status: 500 }
