@@ -18,15 +18,12 @@ jest.mock('@/lib/prisma', () => ({
     },
   },
 }));
-// Mock do getServerSession
-jest.mock('next-auth', () => ({
+// Mock do auth - properly mock the getServerSession from @/lib/auth
+jest.mock('@/lib/auth', () => ({
+  authOptions: {},
   getServerSession: jest.fn(() =>
     Promise.resolve({ user: { id: 'user-123' } })
   ),
-}));
-// Mock do authOptions
-jest.mock('@/lib/auth', () => ({
-  authOptions: {},
 }));
 describe('/api/tasks', () => {
   beforeEach(() => {
@@ -66,8 +63,8 @@ describe('/api/tasks', () => {
       expect(prisma.task.findMany).toHaveBeenCalled();
     });
     it('returns 401 for unauthenticated requests', async () => {
-      const nextAuth = jest.requireMock('next-auth');
-      nextAuth.getServerSession.mockResolvedValueOnce(null);
+      const auth = jest.requireMock('@/lib/auth');
+      auth.getServerSession.mockResolvedValueOnce(null);
       const request = new NextRequest('http://localhost:3000/api/tasks');
       const response = await GET(request);
       expect(response.status).toBe(401);
