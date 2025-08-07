@@ -1,77 +1,64 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-// Modelo de Usuário
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  name          String
-  password      String
-  emailVerified DateTime?
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relações
-  tasks         Task[]
-  projects      Project[]
-  categories    Category[]
+  id                  String                @id @default(uuid())
+  email               String                @unique
+  name                String
+  password            String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  emailVerified       DateTime?
+  image               String?
+  categories          Category[]
+  chatHistory         ChatHistory[]
+  dataExports         DataExport[]
+  notifications       Notification[]
   passwordResetTokens PasswordResetToken[]
-  chatHistory   ChatHistory[]
-  notifications Notification[]
-  reminders     Reminder[]
-  collaborations ProjectCollaborator[]
-  dataExports   DataExport[]
+  projects            Project[]
+  collaborations      ProjectCollaborator[]
+  reminders           Reminder[]
+  tasks               Task[]
 }
 
-// Modelo de Token de Recuperação de Senha
 model PasswordResetToken {
   id        String   @id @default(uuid())
   token     String   @unique
   expires   DateTime
   createdAt DateTime @default(now())
-  
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId])
 }
 
-// Modelo de Tarefa
 model Task {
-  id          String    @id @default(uuid())
+  id          String     @id @default(uuid())
   title       String
   description String?
-  completed   Boolean   @default(false)
-  priority    Priority  @default(MEDIUM)
-  status      TaskStatus @default(TODO)
+  completed   Boolean    @default(false)
+  priority    Priority   @default(MEDIUM)
   dueDate     DateTime?
-  completedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // Relações
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  
   projectId   String?
-  project     Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  
-  tags        Tag[]
+  completedAt DateTime?
+  status      TaskStatus @default(TODO)
   reminders   Reminder[]
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  project     Project?   @relation(fields: [projectId], references: [id])
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags        Tag[]      @relation("TagToTask")
 
   @@index([userId])
   @@index([categoryId])
@@ -79,69 +66,55 @@ model Task {
   @@index([status])
 }
 
-// Modelo de Categoria
 model Category {
   id        String   @id @default(uuid())
   name      String
   color     String   @default("#6B7280")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Relações
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   tasks     Task[]
 
   @@unique([userId, name])
   @@index([userId])
 }
 
-// Modelo de Projeto
 model Project {
-  id          String    @id @default(uuid())
-  name        String
-  description String?
-  status      ProjectStatus @default(ACTIVE)
-  startDate   DateTime?
-  endDate     DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // Relações
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  tasks       Task[]
+  id            String                @id @default(uuid())
+  name          String
+  description   String?
+  status        ProjectStatus         @default(ACTIVE)
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  userId        String
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   collaborators ProjectCollaborator[]
+  tasks         Task[]
 
   @@unique([userId, name])
   @@index([userId])
 }
 
-// Modelo de Tag
 model Tag {
   id        String   @id @default(uuid())
   name      String   @unique
   color     String   @default("#3B82F6")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Relações
-  tasks     Task[]
+  tasks     Task[]   @relation("TagToTask")
 }
 
-// Modelo de Histórico de Chat com IA
 model ChatHistory {
   id               String   @id @default(uuid())
   userMessage      String
-  assistantMessage String   @db.Text
+  assistantMessage String
   action           String?
   metadata         Json?
-  model            String?  // Modelo usado na resposta
+  model            String?
   createdAt        DateTime @default(now())
-
-  // Relações
   userId           String
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -149,95 +122,80 @@ model ChatHistory {
   @@index([createdAt])
 }
 
-// Modelo de Notificação
 model Notification {
-  id          String             @id @default(uuid())
-  title       String
-  message     String
-  type        NotificationType
-  read        Boolean            @default(false)
-  readAt      DateTime?
-  link        String?            // Link para ação relacionada
-  metadata    Json?              // Dados adicionais da notificação
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-
-  // Relações
-  userId      String
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String           @id @default(uuid())
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean          @default(false)
+  readAt    DateTime?
+  link      String?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, read])
   @@index([createdAt])
 }
 
-// Modelo de Lembrete
 model Reminder {
-  id          String             @id @default(uuid())
+  id          String        @id @default(uuid())
   title       String
   description String?
-  reminderAt  DateTime           // Quando o lembrete deve ser enviado
-  recurring   RecurringType      @default(NONE)
-  sent        Boolean            @default(false)
+  reminderAt  DateTime
+  recurring   RecurringType @default(NONE)
+  sent        Boolean       @default(false)
   sentAt      DateTime?
-  active      Boolean            @default(true)
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-
-  // Relações
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   userId      String
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   taskId      String?
-  task        Task?              @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task        Task?         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, active])
   @@index([reminderAt])
   @@index([taskId])
 }
 
-// Modelo de Colaboração de Projeto
 model ProjectCollaborator {
-  id          String             @id @default(uuid())
-  role        CollaboratorRole   @default(VIEWER)
-  acceptedAt  DateTime?
-  invitedAt   DateTime           @default(now())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-
-  // Relações
-  projectId   String
-  project     Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
-  userId      String
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         String           @id @default(uuid())
+  role       CollaboratorRole @default(VIEWER)
+  acceptedAt DateTime?
+  invitedAt  DateTime         @default(now())
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  projectId  String
+  userId     String
+  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([projectId, userId])
   @@index([projectId])
   @@index([userId])
 }
 
-// Modelo de Exportação de Dados
 model DataExport {
-  id          String             @id @default(uuid())
-  filename    String
-  format      ExportFormat
-  status      ExportStatus       @default(PENDING)
-  url         String?            // URL do arquivo exportado
-  expiresAt   DateTime?          // Quando o arquivo expira
-  error       String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-
-  // Relações
-  userId      String
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String       @id @default(uuid())
+  filename  String
+  format    ExportFormat
+  status    ExportStatus @default(PENDING)
+  url       String?
+  expiresAt DateTime?
+  error     String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
   @@index([createdAt])
 }
 
-// Modelo de Configurações do Sistema (Admin)
 model SystemConfig {
   id          String   @id @default(uuid())
   key         String   @unique
@@ -249,7 +207,6 @@ model SystemConfig {
   @@index([key])
 }
 
-// Enums
 enum Priority {
   LOW
   MEDIUM

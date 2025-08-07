@@ -1,0 +1,86 @@
+name: Post-Deployment Migration
+
+on:
+  # Trigger on successful Vercel deployment
+  deployment_status:
+  # Or manually trigger
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to migrate'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - preview
+
+jobs:
+  migrate:
+    # Only run on successful deployments or manual triggers
+    if: |
+      github.event_name == 'workflow_dispatch' || 
+      (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success')
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Prisma migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: |
+          echo "🔄 Running migrations for ${{ github.event.inputs.environment || 'production' }} environment..."
+          npx prisma migrate deploy
+          echo "✅ Migrations completed successfully!"
+
+      - name: Verify migration status
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: |
+          echo "📊 Checking migration status..."
+          npx prisma migrate status
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "🎉 Migrations successfully applied to ${{ github.event.inputs.environment || 'production' }}!"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Migration failed! Please check the logs for details."
+          exit 1
+
+  # Optional: Send notifications
+  notify:
+    needs: migrate
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Send notification
+        run: |
+          if [ "${{ needs.migrate.result }}" == "success" ]; then
+            echo "✅ Migration completed successfully"
+            # Add your notification logic here (Slack, Discord, email, etc.)
+          else
+            echo "❌ Migration failed"
+            # Add your error notification logic here
+          fi

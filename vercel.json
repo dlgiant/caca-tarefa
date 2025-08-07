@@ -1,9 +1,9 @@
 {
-  "buildCommand": "prisma generate && prisma migrate deploy && next build",
+  "buildCommand": "prisma generate && next build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm ci",
-  
+  "installCommand": "npm install",
+
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30,
@@ -14,7 +14,7 @@
       "memory": 1536
     }
   },
-  
+
   "crons": [
     {
       "path": "/api/cron/backup",
@@ -29,12 +29,14 @@
       "schedule": "0 3 * * 0"
     }
   ],
-  
+
   "env": {
     "NODE_ENV": "production",
-    "NEXT_TELEMETRY_DISABLED": "1"
+    "NEXT_TELEMETRY_DISABLED": "1",
+    "DATABASE_URL": "@database_url",
+    "DIRECT_URL": "@direct_url"
   },
-  
+
   "headers": [
     {
       "source": "/(.*)",
@@ -115,7 +117,7 @@
       ]
     }
   ],
-  
+
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -126,7 +128,7 @@
       "destination": "/api/robots"
     }
   ],
-  
+
   "redirects": [
     {
       "source": "/home",
@@ -134,9 +136,9 @@
       "permanent": true
     }
   ],
-  
+
   "regions": ["gru1"],
-  
+
   "github": {
     "silent": false,
     "autoAlias": true

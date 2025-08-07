@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
@@ -26,7 +26,11 @@
     "backup:prod": "NODE_ENV=production tsx scripts/backup.ts",
     "restore:backup": "tsx scripts/restore.ts",
     "setup:supabase": "tsx scripts/setup-supabase.ts",
-    "vercel:build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "prisma generate && next build",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:prod": "./scripts/migrate-prod.sh",
+    "migrate:prod:status": "source .env.production.local && npx prisma migrate status",
+    "migrate:prod:remote": "./scripts/trigger-remote-migration.sh",
     "prepare": "husky"
   },
   "prisma": {
