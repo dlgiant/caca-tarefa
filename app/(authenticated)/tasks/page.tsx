@@ -1,23 +1,26 @@
-import { Metadata } from 'next';
-import { Suspense } from 'react';
-import { TableSkeleton } from '@/components/ui/loading-skeleton';
-import TasksContent from './tasks-content';
-export const metadata: Metadata = {
-  title: 'Tarefas | Caça Tarefa',
-  description: 'Gerencie todas as suas tarefas em um só lugar',
-};
-export default function TasksPage() {
+import { redirect } from 'next/navigation';
+import { getServerSession } from '@/lib/auth';
+import { TaskList } from '@/components/tasks/task-list';
+import { QuickManage } from '@/components/tasks/quick-manage';
+export default async function TasksPage() {
+  const session = await getServerSession();
+  if (!session) {
+    redirect('/login');
+  }
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tarefas</h1>
-        <p className="text-muted-foreground">
-          Gerencie e acompanhe todas as suas tarefas
-        </p>
+    <div className="container mx-auto py-8 px-4">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Minhas Tarefas</h1>
+            <p className="text-muted-foreground mt-2">
+              Gerencie suas tarefas, projetos e prioridades em um só lugar
+            </p>
+          </div>
+          <QuickManage />
+        </div>
       </div>
-      <Suspense fallback={<TableSkeleton />}>
-        <TasksContent />
-      </Suspense>
+      <TaskList />
     </div>
   );
 }
