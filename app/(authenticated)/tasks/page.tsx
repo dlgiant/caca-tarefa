@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
-import { getServerSession } from '@/lib/auth';
+import { auth } from '@/src/auth';
 import { TaskList } from '@/components/tasks/task-list';
-import { QuickManage } from '@/components/tasks/quick-manage';
+import { AddActivityButton } from '@/components/tasks/add-activity-button';
+import { Sparkles } from 'lucide-react';
 export default async function TasksPage() {
-  const session = await getServerSession();
+  const session = await auth();
   if (!session) {
     redirect('/login');
   }
@@ -12,12 +13,15 @@ export default async function TasksPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Minhas Tarefas</h1>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Sparkles className="h-8 w-8 text-yellow-500" />
+              Minhas Atividades de Hoje
+            </h1>
             <p className="text-muted-foreground mt-2">
-              Gerencie suas tarefas, projetos e prioridades em um só lugar
+              Vamos aprender coisas novas e divertidas! 🎉
             </p>
           </div>
-          <QuickManage />
+          <AddActivityButton />
         </div>
       </div>
       <TaskList />

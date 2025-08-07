@@ -212,10 +212,11 @@ export function ProjectSharing() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Colaboração em Projetos
+            Compartilhamento com Família e Amigos
           </CardTitle>
           <CardDescription>
-            Gerencie o compartilhamento e colaboradores dos seus projetos
+            Gerencie o compartilhamento dos seus projetos com familiares e
+            amigos
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -252,7 +253,7 @@ export function ProjectSharing() {
                           </div>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline">
-                              {project.collaborators?.length || 0} colaboradores
+                              {project.collaborators?.length || 0} membros
                             </Badge>
                             <Dialog
                               open={isInviteDialogOpen}
@@ -273,11 +274,12 @@ export function ProjectSharing() {
                               <DialogContent>
                                 <DialogHeader>
                                   <DialogTitle>
-                                    Convidar Colaborador
+                                    Convidar Familiar ou Amigo
                                   </DialogTitle>
                                   <DialogDescription>
-                                    Envie um convite para alguém colaborar no
-                                    projeto {`"${selectedProject?.name}"`}
+                                    Envie um convite para um familiar ou amigo
+                                    participar do projeto{' '}
+                                    {`"${selectedProject?.name}"`}
                                   </DialogDescription>
                                 </DialogHeader>
                                 <Form {...form}>

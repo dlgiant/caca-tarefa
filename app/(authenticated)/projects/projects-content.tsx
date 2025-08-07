@@ -1,5 +1,13 @@
 'use client';
-import { Plus, MoreVertical, Users, Calendar, CheckSquare } from 'lucide-react';
+import {
+  Plus,
+  MoreVertical,
+  Users,
+  Calendar,
+  CheckSquare,
+  Home,
+  UserPlus,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -31,10 +39,10 @@ const projects = [
     totalTasks: 24,
     completedTasks: 18,
     dueDate: '2024-02-15',
-    team: [
-      { name: 'João Silva', avatar: '' },
-      { name: 'Maria Santos', avatar: '' },
-      { name: 'Pedro Costa', avatar: '' },
+    group: [
+      { name: 'João Silva', avatar: '', type: 'family' },
+      { name: 'Maria Santos', avatar: '', type: 'family' },
+      { name: 'Pedro Costa', avatar: '', type: 'friend' },
     ],
     priority: 'high',
   },
@@ -47,9 +55,9 @@ const projects = [
     totalTasks: 36,
     completedTasks: 16,
     dueDate: '2024-03-01',
-    team: [
-      { name: 'Ana Lima', avatar: '' },
-      { name: 'Carlos Souza', avatar: '' },
+    group: [
+      { name: 'Ana Lima', avatar: '', type: 'family' },
+      { name: 'Carlos Souza', avatar: '', type: 'friend' },
     ],
     priority: 'medium',
   },
@@ -62,11 +70,11 @@ const projects = [
     totalTasks: 20,
     completedTasks: 18,
     dueDate: '2024-01-25',
-    team: [
-      { name: 'Roberto Alves', avatar: '' },
-      { name: 'Juliana Martins', avatar: '' },
-      { name: 'Fernando Silva', avatar: '' },
-      { name: 'Camila Costa', avatar: '' },
+    group: [
+      { name: 'Roberto Alves', avatar: '', type: 'friend' },
+      { name: 'Juliana Martins', avatar: '', type: 'family' },
+      { name: 'Fernando Silva', avatar: '', type: 'friend' },
+      { name: 'Camila Costa', avatar: '', type: 'family' },
     ],
     priority: 'high',
   },
@@ -79,9 +87,9 @@ const projects = [
     totalTasks: 15,
     completedTasks: 2,
     dueDate: '2024-04-01',
-    team: [
-      { name: 'Lucas Oliveira', avatar: '' },
-      { name: 'Patricia Lima', avatar: '' },
+    group: [
+      { name: 'Lucas Oliveira', avatar: '', type: 'friend' },
+      { name: 'Patricia Lima', avatar: '', type: 'family' },
     ],
     priority: 'low',
   },
@@ -94,10 +102,10 @@ const projects = [
     totalTasks: 30,
     completedTasks: 30,
     dueDate: '2024-01-10',
-    team: [
-      { name: 'Marcos Paulo', avatar: '' },
-      { name: 'Sandra Regina', avatar: '' },
-      { name: 'Diego Santos', avatar: '' },
+    group: [
+      { name: 'Marcos Paulo', avatar: '', type: 'family' },
+      { name: 'Sandra Regina', avatar: '', type: 'family' },
+      { name: 'Diego Santos', avatar: '', type: 'friend' },
     ],
     priority: 'high',
   },
@@ -110,7 +118,7 @@ const projects = [
     totalTasks: 12,
     completedTasks: 4,
     dueDate: '2024-05-15',
-    team: [{ name: 'Rafael Mendes', avatar: '' }],
+    group: [{ name: 'Rafael Mendes', avatar: '', type: 'friend' }],
     priority: 'medium',
   },
 ];
@@ -233,23 +241,29 @@ export default function ProjectsContent() {
                 <div className="flex items-center gap-1">
                   <Users className="h-4 w-4 text-muted-foreground" />
                   <div className="flex -space-x-2">
-                    {project.team.slice(0, 3).map((member, index) => (
-                      <Avatar
-                        key={index}
-                        className="h-7 w-7 border-2 border-background"
-                      >
-                        <AvatarImage src={member.avatar} />
-                        <AvatarFallback className="text-xs">
-                          {member.name
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')}
-                        </AvatarFallback>
-                      </Avatar>
+                    {project.group.slice(0, 3).map((member, index) => (
+                      <div key={index} className="relative">
+                        <Avatar className="h-7 w-7 border-2 border-background">
+                          <AvatarImage src={member.avatar} />
+                          <AvatarFallback className="text-xs">
+                            {member.name
+                              .split(' ')
+                              .map((n) => n[0])
+                              .join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border border-background bg-background">
+                          {member.type === 'family' ? (
+                            <Home className="h-2.5 w-2.5 text-blue-500" />
+                          ) : (
+                            <UserPlus className="h-2.5 w-2.5 text-green-500" />
+                          )}
+                        </div>
+                      </div>
                     ))}
-                    {project.team.length > 3 && (
+                    {project.group.length > 3 && (
                       <div className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-background bg-muted text-xs">
-                        +{project.team.length - 3}
+                        +{project.group.length - 3}
                       </div>
                     )}
                   </div>

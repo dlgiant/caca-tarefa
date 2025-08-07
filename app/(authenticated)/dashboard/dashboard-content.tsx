@@ -178,7 +178,7 @@ export default function DashboardContent() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Atividade da Equipe
+              Atividade da Família e Amigos
             </CardTitle>
           </CardHeader>
           <CardContent>
