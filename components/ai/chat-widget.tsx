@@ -1,13 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  X,
-  Send,
-  Loader2,
-  Bot,
-  User,
-  Sparkles,
-} from 'lucide-react';
+import { X, Send, Loader2, Bot, User, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ChatMessage } from '@/lib/ai/types';
 import { motion, AnimatePresence } from 'framer-motion';
