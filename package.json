@@ -119,7 +119,7 @@
     "@types/react": "^19",
     "@types/react-big-calendar": "^1.16.2",
     "@types/react-dom": "^19",
-    "@types/testing-library__jest-dom": "^5.14.9",
+    "@types/testing-library__jest-dom": "^6.0.0",
     "babel-jest": "^30.0.5",
     "bcryptjs": "^3.0.2",
     "eslint": "^9",
